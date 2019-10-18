@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: flan-scan-deployment 
+    labels:
+        app: flan-scan
+spec:
+   replicas: 1
+   selector:
+       matchLabels:
+           app: flan-scan
+   template:
+       metadata:
+           labels:
+               app: flan-scan
+       spec:
+           volumes:
+           - name: cloud-key
+             secret:
+               secretName: cloud-key
+           - name: shared-files
+             configMap:
+                name: shared-files
+           containers:
+           - name: flan-scan-svc
+             image: <REFERENCE TO REGISTRY FOR CONTAINER>
+             imagePullPolicy: IfNotPresent
+             volumeMounts:
+             - name: cloud-key
+               mountPath: /var/secrets/google
+             - name: shared-files
+               mountPath: /shared 
+             env:
+             - name: upload
+               value: <GCP_OR_AWS>
+             - name: bucket
+               value: <BUCKET_NAME>

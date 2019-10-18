@@ -1,0 +1,23 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{longtable}
+\title{Network Vulnerability Scan Report\\}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Summary}
+This report contains the results for the vulnerability scan conducted on the IP addresses listed below. The scanner performs three types of scans. 
+\begin{enumerate}
+    \item Ping Scan - Determine which IP addresses of those provided are online.
+    \item SYN Scan - Determine for each port on each IP address its state (open, closed, or filtered).
+    \item Service Scan - For each open port, determine the service running on that port. When possible a CPE is identified, otherwise the scanner attempts to give the greatest amount of information on the service.
+\end{enumerate}
+
+After performing these three scans, the scanner queries a database of CVEs for any CPEs that it determined. If any CVEs exists for the CPEs these are reported.
+
+\section{List of CIDRs Scanned}
+What follows is a list of range of IPs (CIDRs) scanned by the scanner. In the following section, only IPs that had open ports are shown.
