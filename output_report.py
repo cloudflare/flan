@@ -160,9 +160,6 @@ def write_ip_list(ip_file):
     return write_buffer
 
 def add_to_summary_table(h, port_obj, total_vulns):
-   total_vulns['high'] += port_obj['high']
-   total_vulns['medium'] += port_obj['medium']
-   total_vulns['low'] += port_obj['low']
    return  h['address']['@addr'] + " & " + str(port_obj['high']) + " & " + str(port_obj['medium']) + " & " + str(port_obj['low']) + '\\\\ \hline\n'  
 
 def main():
@@ -202,9 +199,6 @@ def main():
     write_buffer += summary_table + '\end{longtable}\n\n' 
     write_buffer += doc_buffer
     write_buffer += '\end{document}'
-    print("WRITING to vuln_metrics" + str(total_vulns))
-    metrics_file = open("/vuln_metrics.txt", "w+")
-    metrics_file.write(str(total_vulns))
     latex_file = open(output_file, "w+")
     latex_file.write(write_buffer)
     latex_file.close()
