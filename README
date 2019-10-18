@@ -1,4 +1,8 @@
-:custard: :custard: FLAN SCAN :custard: :custard:
+<div>
+  <p align="center">
+      :custard: Flan Scan :custard:
+  </p>
+</div>
 =================================================
 Flan Scan is a lightweight network vulnerability scanner. With Flan Scan you can easily find open ports on your network, identify services and their version, and get a list of relevant CVEs affecting your network. 
 
@@ -92,6 +96,6 @@ Flan Scan should run successfully on Kubernetes!
       <img src="https://cfsecuritycdn.infosec.workers.dev/img/cfsecurity-phoenix.svg" width="10%" style=" margin: auto;">
   </p>
   <p align="center">
-      A cloudflare security project 
+      A Cloudflare security project 
   </p>
 </div>
