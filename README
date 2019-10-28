@@ -1,4 +1,4 @@
-                                                  :custard: Flan Scan :custard:
+                                                    :custard: Flan Scan :custard:
 
 Flan Scan is a lightweight network vulnerability scanner. With Flan Scan you can easily find open ports on your network, identify services and their version, and get a list of relevant CVEs affecting your network. 
 
@@ -86,12 +86,3 @@ Here are some easy steps to deploy Flan Scan on Kubernetes:
 4. Now run `kubectl apply -f deployment.yaml`
 
 Flan Scan should run successfully on Kubernetes! 
-
-<div>
-  <p align="center">
-      <img src="https://cfsecuritycdn.infosec.workers.dev/img/cfsecurity-phoenix.svg" width="10%" style=" margin: auto;">
-  </p>
-  <p align="center">
-      A Cloudflare security project 
-  </p>
-</div>
