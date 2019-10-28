@@ -1,4 +1,4 @@
-                                                    :custard: Flan Scan :custard:
+# :custard: Flan Scan :custard:
 
 Flan Scan is a lightweight network vulnerability scanner. With Flan Scan you can easily find open ports on your network, identify services and their version, and get a list of relevant CVEs affecting your network. 
 
