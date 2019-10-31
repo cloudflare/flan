@@ -3,14 +3,16 @@ import xmltodict
 import sys
 import os
 from datetime import datetime
-from ares import CVESearch
+import urllib
 
 colors = {'high': 'FD6864', 'medium': 'F8A102', 'low': '34CDF9'}
 
 def get_summary(cve):
-    cveDB = CVESearch()
-    json = cveDB.id(cve)
-    return json['summary']
+    year = cve[4:8]
+    section = cve[9:-3] + 'xxx' 
+    url = "https://raw.githubusercontent.com/CVEProject/cvelist/master/{}/{}/{}.json".format(year, section, cve)
+    cve_json = json.loads(urllib.urlopen(url).read())
+    return cve_json["description"]["description_data"][0]["value"]
 
 def table(cve_elem):
     type = ''

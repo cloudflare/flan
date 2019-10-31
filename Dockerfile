@@ -5,7 +5,6 @@ RUN apk add nmap-scripts
 RUN apk add git
 
 #install package for cve descriptions
-RUN pip install ares
 RUN pip install xmltodict
 RUN pip install google-cloud-storage
 RUN pip install boto3
