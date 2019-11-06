@@ -35,7 +35,7 @@ while IFS= read -r line
 do
   current_time=$(date "+%Y.%m.%d-%H.%M.%S")
   filename=$(get_filename $line)".xml"
-  nmap -sV -oX $root_dir$xml_dir/$filename -oN - -v1 --script=vulners/vulners.nse $line
+  nmap -sV -oX $root_dir$xml_dir/$filename -oN - -v1 $@ --script=vulners/vulners.nse $line
   upload $xml_dir/$filename
 done < /shared/ips.txt
 
