@@ -8,6 +8,7 @@ results = {}
 vulnerable_services = []
 colors = {'High': 'FD6864', 'Medium': 'F8A102', 'Low': '34CDF9'}
 
+
 def parse_vuln(ip_addr, port, app_name, vuln):
     vuln_name = ''
     severity = ''
@@ -20,9 +21,14 @@ def parse_vuln(ip_addr, port, app_name, vuln):
         elif field['@key'] == 'type':
             type = field['#text']
     if 'vulns'in results[app_name].keys():
-        results[app_name]['vulns'].append({'name': vuln_name, 'type': type, 'severity': severity})
+        results[app_name]['vulns'].append({'name': vuln_name,
+                                           'type': type,
+                                           'severity': severity})
     else:
-        results[app_name]['vulns'] = [{'name': vuln_name, 'type': type, 'severity': severity}]
+        results[app_name]['vulns'] = [{'name': vuln_name,
+                                       'type': type,
+                                       'severity': severity}]
+
 
 def parse_script(ip_addr, port, app_name, script):
     vulnerable_services.append(app_name)
@@ -33,22 +39,24 @@ def parse_script(ip_addr, port, app_name, script):
     else:
         parse_vuln(ip_addr, port, app_name, script_table['elem'])
 
+
 def get_app_name(service):
     app_name = ''
     if '@product' in service.keys():
-            app_name += service['@product'] + " "
-            if '@version' in service.keys():
-                app_name += service['@version'] + " "
+        app_name += service['@product'] + " "
+        if '@version' in service.keys():
+            app_name += service['@version'] + " "
     elif '@name' in service.keys():
-            app_name += service['@name'] + " "
+        app_name += service['@name'] + " "
 
     if('cpe' in service.keys()):
-            if isinstance(service['cpe'], list):
-                for cpe in service['cpe']:
-                    app_name += '(' + cpe + ") "
-            else:
-                app_name += '(' + service['cpe'] + ") "
+        if isinstance(service['cpe'], list):
+            for cpe in service['cpe']:
+                app_name += '(' + cpe + ") "
+        else:
+            app_name += '(' + service['cpe'] + ") "
     return app_name
+
 
 def parse_port(ip_addr, port):
     if port['state']['@state'] == 'closed':
@@ -59,10 +67,10 @@ def parse_port(ip_addr, port):
 
     if app_name in results.keys():
         if ip_addr in results[app_name]['locations'].keys():
-            results[app_name]['locations'][ip_addr].append(port_num) 
+            results[app_name]['locations'][ip_addr].append(port_num)
         else:
             results[app_name]['locations'][ip_addr] = [port_num]
-    else: 
+    else:
         results[app_name] = {'locations': {ip_addr: [port_num]}}
         if 'script' in port.keys():
             scripts = port['script']
@@ -74,6 +82,7 @@ def parse_port(ip_addr, port):
                 if scripts['@id'] == 'vulners':
                     parse_script(ip_addr, port_num, app_name, scripts)
 
+
 def parse_host(host):
     ip_addr = host['address']['@addr']
     if host['status']['@state'] == 'up' and 'port' in host['ports'].keys():
@@ -84,6 +93,7 @@ def parse_host(host):
         else:
             parse_port(ip_addr, ports)
 
+
 def parse_results(data):
     hosts = data['nmaprun']['host']
 
@@ -93,6 +103,7 @@ def parse_results(data):
     else:
         parse_host(hosts)
 
+
 def convert_severity(sev):
     if sev < 4:
         return 'Low'
@@ -101,77 +112,100 @@ def convert_severity(sev):
     else:
         return 'High'
 
+
 def get_description(vuln, type):
     if type == 'cve':
-            year = vuln[4:8]
-            section = vuln[9:-3] + 'xxx'
-            url = "https://raw.githubusercontent.com/CVEProject/cvelist/master/{}/{}/{}.json".format(year, section, vuln)
-            cve_json = json.loads(urllib.urlopen(url).read())
-            return cve_json["description"]["description_data"][0]["value"]
+        year = vuln[4:8]
+        section = vuln[9:-3] + 'xxx'
+        url = """https://raw.githubusercontent.com/CVEProject/cvelist/master/
+              {}/{}/{}.json""".format(year, section, vuln)
+        cve_json = json.loads(urllib.urlopen(url).read())
+        return cve_json["description"]["description_data"][0]["value"]
     else:
         return ''
 
+
 def create_latex():
-    f = open('./new_header.tex')
-    write_buffer = f.read() 
+    f = open('./latex_header.tex')
+    write_buffer = f.read()
     f.close()
-    
+
     output_file = sys.argv[2]
     ip_file = sys.argv[3]
 
-    write_buffer += '\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt, label=\\textbf{\large \\arabic{enumi} \large}]\n'
+    write_buffer += """\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt,
+                    label=\\textbf{\large \\arabic{enumi} \large}]\n"""
     for s in vulnerable_services:
-            write_buffer += '\item \\textbf{\large ' + s + ' \large}'
-            vulns = results[s]['vulns']
-            locations = results[s]['locations']
-            num_vulns = len(vulns)
+        write_buffer += '\item \\textbf{\large ' + s + ' \large}'
+        vulns = results[s]['vulns']
+        locations = results[s]['locations']
+        num_vulns = len(vulns)
 
-            for i,v in enumerate(vulns):
-                write_buffer += '\\begin{figure}[h!]\n'        
-                severity_name = convert_severity(v['severity'])
-                write_buffer += '\\begin{tabular}{|p{16cm}|}\\rowcolor[HTML]{' + colors[severity_name] + '} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash}p{0.5cm}@{}}\\textbf{' + v['name'] + ' ' + severity_name + ' (' + str(v['severity']) + ')} & \href{https://nvd.nist.gov/vuln/detail/' + v['name'] + '}{\large \\faicon{link}}' + '\end{tabular}\\\\\n Summary:' + get_description(v['name'], v['type']) + '\\\\ \hline \end{tabular}  '
-                write_buffer += '\end{figure}\n'
-            write_buffer += '\FloatBarrier\n\\textbf{The above ' + str(num_vulns) + ' vulnerabilities apply to these network locations:}\n\\begin{itemize}\n'
-            for addr in locations.keys():
-                write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr]) + '\n'
-            write_buffer += '\\\\ \\\\ \n \end{itemize}\n'
+        for i, v in enumerate(vulns):
+            write_buffer += '\\begin{figure}[h!]\n'
+            severity_name = convert_severity(v['severity'])
+            write_buffer += '\\begin{tabular}{|p{16cm}|}\\rowcolor[HTML]{'
+            + colors[severity_name]
+            + """} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash}
+            p{0.5cm}@{}}\\textbf{"""
+            + v['name'] + ' ' + severity_name + ' ('
+            + str(v['severity'])
+            + ')} & \href{https://nvd.nist.gov/vuln/detail/'
+            + v['name'] + '}{\large \\faicon{link}}'
+            + '\end{tabular}\\\\\n Summary:'
+            + get_description(v['name'], v['type'])
+            + '\\\\ \hline \end{tabular}  '
+            write_buffer += '\end{figure}\n'
+        write_buffer += '\FloatBarrier\n\\textbf{The above '
+        + str(num_vulns)
+        + """ vulnerabilities apply to these network locations:}\n
+        \\begin{itemize}\n"""
+        for addr in locations.keys():
+            write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr])
+            + '\n'
+        write_buffer += '\\\\ \\\\ \n \end{itemize}\n'
     write_buffer += '\end{enumerate}\n'
-           
-    non_vuln_services = list(set(results.keys()) - set(vulnerable_services))        
+
+    non_vuln_services = list(set(results.keys()) - set(vulnerable_services))
     write_buffer += '\section*{Services With No Known Vulnerabilities}'
-    write_buffer += '\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt, label=\\textbf{\large \\arabic{enumi} \large}]\n'
+    write_buffer += """\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt,
+    label=\\textbf{\large \\arabic{enumi} \large}]\n"""
     for ns in non_vuln_services:
-        write_buffer += '\item \\textbf{\large ' + ns + ' \large}\n\\begin{itemize}\n'
+        write_buffer += """\item \\textbf{\large ' + ns + ' \large}\n\
+        \begin{itemize}\n"""
         locations = results[ns]['locations']
         for addr in locations.keys():
-            write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr]) + '\n'
+            write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr])
+            + '\n'
         write_buffer += '\end{itemize}\n'
     write_buffer += '\end{enumerate}\n'
 
-    write_buffer += '\section*{List of IPs Scanned}' 
+    write_buffer += '\section*{List of IPs Scanned}'
     write_buffer += '\\begin{itemize}\n'
     f = open(ip_file)
     for line in f:
         write_buffer += '\item ' + line + '\n'
     f.close()
     write_buffer += '\end{itemize}\n'
-    
+
     write_buffer += '\end{document}'
     latex_file = open(output_file, "w+")
     latex_file.write(write_buffer)
     latex_file.close()
 
+
 def main():
     dirname = sys.argv[1]
- 
+
     for filename in os.listdir(dirname):
-        f= open(dirname + "/" + filename)
+        f = open(dirname + "/" + filename)
         xml_content = f.read()
         f.close()
         data = xmltodict.parse(xml_content)
         parse_results(data)
 
     create_latex()
+
 
 if __name__ == "__main__":
     main()
