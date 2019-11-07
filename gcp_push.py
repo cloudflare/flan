@@ -5,6 +5,6 @@ import os
 filename = sys.argv[1]
 
 client = storage.Client()
-bucket = client.get_bucket(os.getenv('bucket'))
+bucket = client.bucket(os.getenv('bucket'))
 blob = bucket.blob(filename)
-blob.upload_from_filename("/" + filename)
+blob.upload_from_filename(filename)

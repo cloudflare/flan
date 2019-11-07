@@ -117,8 +117,7 @@ def get_description(vuln, type):
     if type == 'cve':
         year = vuln[4:8]
         section = vuln[9:-3] + 'xxx'
-        url = """https://raw.githubusercontent.com/CVEProject/cvelist/master/
-              {}/{}/{}.json""".format(year, section, vuln)
+        url = """https://raw.githubusercontent.com/CVEProject/cvelist/master/{}/{}/{}.json""".format(year, section, vuln)
         cve_json = json.loads(urllib.urlopen(url).read())
         return cve_json["description"]["description_data"][0]["value"]
     else:
@@ -144,25 +143,24 @@ def create_latex():
         for i, v in enumerate(vulns):
             write_buffer += '\\begin{figure}[h!]\n'
             severity_name = convert_severity(v['severity'])
-            write_buffer += '\\begin{tabular}{|p{16cm}|}\\rowcolor[HTML]{'
-            + colors[severity_name]
-            + """} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash}
-            p{0.5cm}@{}}\\textbf{"""
-            + v['name'] + ' ' + severity_name + ' ('
-            + str(v['severity'])
-            + ')} & \href{https://nvd.nist.gov/vuln/detail/'
-            + v['name'] + '}{\large \\faicon{link}}'
-            + '\end{tabular}\\\\\n Summary:'
-            + get_description(v['name'], v['type'])
-            + '\\\\ \hline \end{tabular}  '
+            write_buffer += '\\begin{tabular}{|p{16cm}|}\\rowcolor[HTML]{' \
+            		    + colors[severity_name] \
+                            + """} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash}
+                              p{0.5cm}@{}}\\textbf{""" \
+                            + v['name'] + ' ' + severity_name + ' (' \
+                            + str(v['severity']) \
+                            + ')} & \href{https://nvd.nist.gov/vuln/detail/' \
+                            + v['name'] + '}{\large \\faicon{link}}' \
+                            + '\end{tabular}\\\\\n Summary:' \
+                            + get_description(v['name'], v['type']) \
+                            + '\\\\ \hline \end{tabular}  '
             write_buffer += '\end{figure}\n'
-        write_buffer += '\FloatBarrier\n\\textbf{The above '
-        + str(num_vulns)
-        + """ vulnerabilities apply to these network locations:}\n
-        \\begin{itemize}\n"""
+        write_buffer += '\FloatBarrier\n\\textbf{The above ' \
+                        + str(num_vulns) \
+                        + """ vulnerabilities apply to these network locations:}\n
+                          \\begin{itemize}\n"""
         for addr in locations.keys():
-            write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr])
-            + '\n'
+            write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr])+ '\n'
         write_buffer += '\\\\ \\\\ \n \end{itemize}\n'
     write_buffer += '\end{enumerate}\n'
 
@@ -171,12 +169,11 @@ def create_latex():
     write_buffer += """\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt,
     label=\\textbf{\large \\arabic{enumi} \large}]\n"""
     for ns in non_vuln_services:
-        write_buffer += """\item \\textbf{\large ' + ns + ' \large}\n\
-        \begin{itemize}\n"""
+        write_buffer += '\item \\textbf{\large ' + ns \
+                        + ' \large}\n\\begin{itemize}\n'
         locations = results[ns]['locations']
         for addr in locations.keys():
-            write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr])
-            + '\n'
+            write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr])+ '\n'
         write_buffer += '\end{itemize}\n'
     write_buffer += '\end{enumerate}\n'
 
