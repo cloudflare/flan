@@ -32,6 +32,11 @@ $ make start
 
 When the scan finishes you will find a Latex report of the summarizing the scan in `shared/results`. You can also see the raw XML output from Nmap in `shared/xml_files`.
 
+<figure class="image">
+  <img src="https://cfsecuritycdn.infosec.workers.dev/img/flan_scan_report1.png"/>
+  <figcaption>Sample Flan Scan Report</figcaption>
+</figure>
+
 Custom Nmap Configuration
 -------------------------
 By default Flan Scan runs the following Nmap command:
@@ -96,7 +101,7 @@ docker run --name <container-name> \
 Deploying on Kubernetes
 -----------------------
 
-When deploying Flan Scan to a container orchestration system, such as Kubernetes, you must ensure that the container has access to a file called `ips.txt` at the directory `/`. In Kubernetes this can be done with a ConfigMap which will mount a file on your local filesystem as a volume that the container can access once deployed. The `kustomization.yaml` file has an example of how to create a ConfigMap called `shared-files`. This ConfigMap is then mounted as a volume in the `deployment.yaml` file.
+When deploying Flan Scan to a container orchestration system, such as Kubernetes, you must ensure that the container has access to a file called `ips.txt` at the directory `/`. In Kubernetes, this can be done with a ConfigMap which will mount a file on your local filesystem as a volume that the container can access once deployed. The `kustomization.yaml` file has an example of how to create a ConfigMap called `shared-files`. This ConfigMap is then mounted as a volume in the `deployment.yaml` file.
 
 Here are some easy steps to deploy Flan Scan on Kubernetes:
 1. To create the the ConfigMap add a path to a local `ips.txt` file in `kustomization.yaml` and then run `kubectl apply -k .`.

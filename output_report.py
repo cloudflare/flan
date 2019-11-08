@@ -124,14 +124,20 @@ def get_description(vuln, type):
         return ''
 
 
-def create_latex():
+def create_latex(nmap_command, start_date):
     f = open('./latex_header.tex')
     write_buffer = f.read()
     f.close()
-
+    
     output_file = sys.argv[2]
     ip_file = sys.argv[3]
-
+  
+    write_buffer += "Flan Scan ran a network vulnerability scan with the following Nmap command on" \
+                 + start_date \
+                 + "UTC.\n\\begin{lstlisting}\n" \
+                 + nmap_command \
+                 + "\n\end{lstlisting}\nTo find out what IPs were scanned see the end of this report.\n"
+    write_buffer += "\section*{Services with Vulnerabilities}"
     write_buffer += """\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt,
                     label=\\textbf{\large \\arabic{enumi} \large}]\n"""
     for s in vulnerable_services:
@@ -194,14 +200,17 @@ def create_latex():
 def main():
     dirname = sys.argv[1]
 
-    for filename in os.listdir(dirname):
+    for i, filename in enumerate(os.listdir(dirname)):
         f = open(dirname + "/" + filename)
         xml_content = f.read()
         f.close()
         data = xmltodict.parse(xml_content)
         parse_results(data)
+        if i == 0:
+            nmap_command = data['nmaprun']['@args'].rsplit(' ', 1)[0]
+            start_date = data['nmaprun']['@startstr']
 
-    create_latex()
+    create_latex(nmap_command, start_date)
 
 
 if __name__ == "__main__":
