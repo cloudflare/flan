@@ -33,8 +33,8 @@ $ make start
 When the scan finishes you will find a Latex report of the summarizing the scan in `shared/results`. You can also see the raw XML output from Nmap in `shared/xml_files`.
 
 <div>
-  <img style="display: inline-block" src="https://cfsecuritycdn.infosec.workers.dev/img/flan_scan_report1.png" width="50%"/>
-  <img style="display: inline-block" src="https://cfsecuritycdn.infosec.workers.dev/img/flan_scan_report2.png" width="50%"/>
+  <img style="display: inline-block" src="https://cfsecuritycdn.infosec.workers.dev/img/flan_scan_report1.png" width="49%"/>
+  <img style="display: inline-block" src="https://cfsecuritycdn.infosec.workers.dev/img/flan_scan_report2.png" width="49%"/>
 </div>
 
 Custom Nmap Configuration
