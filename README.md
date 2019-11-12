@@ -43,7 +43,8 @@ $ nmap -sV -oX $root_dir$xml_dir/$filename -oN - -v1 $@ --script=vulners/vulners
 
 To add your own configuration to Nmap, after running `make build` run the container and pass in the Nmap arguments like so:
 ```bash
-$ docker run -v $(shell pwd)/shared:/shared flan_scan <Nmap args>
+$ docker run -v $(shell pwd)/shared:/shared flan_scan <Nmap-flags>
+```
 
 Pushing Results to the Cloud
 ----------------------------
