@@ -1,8 +1,4 @@
-<div>
-  <h1 align="center">
-      :custard: Flan Scan :custard:
-  </h1>
-</div>
+<img src="https://cfsecuritycdn.infosec.workers.dev/img/flan_scan.png"/>
 
 Flan Scan is a lightweight network vulnerability scanner. With Flan Scan you can easily find open ports on your network, identify services and their version, and get a list of relevant CVEs affecting your network.
 
