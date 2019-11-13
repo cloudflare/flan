@@ -1,8 +1,4 @@
-<div>
-  <h1 align="center">
-      :custard: Flan Scan :custard:
-  </h1>
-</div>
+<img src="https://cfsecuritycdn.infosec.workers.dev/img/flan_scan.png"/>
 
 Flan Scan is a lightweight network vulnerability scanner. With Flan Scan you can easily find open ports on your network, identify services and their version, and get a list of relevant CVEs affecting your network.
 
@@ -42,12 +38,15 @@ Custom Nmap Configuration
 By default Flan Scan runs the following Nmap command:
 
 ```bash
-$ nmap -sV -oX $root_dir$xml_dir/$filename -oN - -v1 $@ --script=vulners/vulners.nse $line
+$ nmap -sV -oX /shared/xml_files -oN - -v1 $@ --script=vulners/vulners.nse <ip-address>
 ```
+The `-oX` flag adds an XML version of the scan results to the `/shared/xml_files` directory and the `-oN -` flag outputs "normal" Nmap results to the console. The `-v1` flag increases the verbosity to 1 and the `-sV` flag runs a service detection scan (aside from Nmap's default port and SYN scans). The `--script=vulners/vulners.nse` is the script that matches the services detected with relevant CVEs.
 
-To add your own configuration to Nmap, after running `make build` run the container and pass in the Nmap arguments like so:
+Nmap also allows you to run UDP scans and to scan IPv6 addresses. To add these and other flags to Scan Flan's Nmap command after running `make build` run the container and pass in you Nmap flags like so:
+
 ```bash
-$ docker run -v $(shell pwd)/shared:/shared flan_scan <Nmap args>
+$ docker run -v $(shell pwd)/shared:/shared flan_scan <Nmap-flags>
+```
 
 Pushing Results to the Cloud
 ----------------------------
