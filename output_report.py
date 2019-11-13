@@ -118,7 +118,7 @@ def get_description(vuln, type):
         year = vuln[4:8]
         section = vuln[9:-3] + 'xxx'
         url = """https://raw.githubusercontent.com/CVEProject/cvelist/master/{}/{}/{}.json""".format(year, section, vuln)
-        cve_json = json.loads(urllib.urlopen(url).read())
+        cve_json = json.loads(urllib.urlopen(url).read().decode("utf-8"))
         return cve_json["description"]["description_data"][0]["value"]
     else:
         return ''
