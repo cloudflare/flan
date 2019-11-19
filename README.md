@@ -67,7 +67,7 @@ Below are some examples for adding the necessary AWS or GCP authentication keys 
 
 Copy your GCS private key for a service account to the `/shared` file
 ```bash
-$ cp <path-to-local-gcs-key>/key.json /shared/
+$ cp <path-to-local-gcs-key>/key.json shared/
 ```
 
 Run the container setting the `GOOGLE_APPLICATION_CREDENTIALS` environment variable as the path to the GCS Key
