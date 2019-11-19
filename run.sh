@@ -44,4 +44,3 @@ sed -i 's/_/\\_/g' $root_dir$report_file
 sed -i 's/\$/\\\$/g' $root_dir$report_file
 sed -i 's/#/\\#/g' $root_dir$report_file
 upload $report_file
-upload vuln_metrics.txt
