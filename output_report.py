@@ -196,6 +196,10 @@ def create_latex(nmap_command, start_date):
     latex_file.write(write_buffer)
     latex_file.close()
 
+def parse_nmap_command(raw_command):
+    nmap_split = raw_command.split()[:-1] #remove last element, ip address
+    nmap_split[3] = "<output-file>"
+    return " ".join(nmap_split)
 
 def main():
     dirname = sys.argv[1]
@@ -207,10 +211,7 @@ def main():
         data = xmltodict.parse(xml_content)
         parse_results(data)
         if i == 0:
-            nmap_wo_last_word = data['nmaprun']['@args'].rsplit(' ', 1)[0]
-            nmap_split = nmap_wo_last_word.split()
-            nmap_split[3] = "<output-file>"
-            nmap_command = " ".join(nmap_split)
+            nmap_command = parse_nmap_command(data['nmaprun']['@args'])
             start_date = data['nmaprun']['@startstr']
 
     create_latex(nmap_command, start_date)
