@@ -132,7 +132,7 @@ def create_latex(nmap_command, start_date):
     output_file = sys.argv[2]
     ip_file = sys.argv[3]
   
-    write_buffer += "Flan Scan ran a network vulnerability scan with the following Nmap command on" \
+    write_buffer += "Flan Scan ran a network vulnerability scan with the following Nmap command on " \
                  + start_date \
                  + "UTC.\n\\begin{lstlisting}\n" \
                  + nmap_command \
@@ -207,7 +207,10 @@ def main():
         data = xmltodict.parse(xml_content)
         parse_results(data)
         if i == 0:
-            nmap_command = data['nmaprun']['@args'].rsplit(' ', 1)[0]
+            nmap_wo_last_word = data['nmaprun']['@args'].rsplit(' ', 1)[0]
+            nmap_split = nmap_wo_last_word.split()
+            nmap_split[3] = "<output-file>"
+            nmap_command = " ".join(nmap_split)
             start_date = data['nmaprun']['@startstr']
 
     create_latex(nmap_command, start_date)
