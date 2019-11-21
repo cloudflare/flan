@@ -32,6 +32,6 @@ spec:
                mountPath: /shared 
              env:
              - name: upload
-               value: <GCP_OR_AWS>
+               value: <GCP_OR_AWS_OR_AZ>
              - name: bucket
                value: <BUCKET_NAME>

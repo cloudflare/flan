@@ -97,6 +97,22 @@ docker run --name <container-name> \
 
 ```
 
+### Example Azure Storage Configuration
+
+Set the `AZURE_ACCOUNT_NAME` and `AZURE_ACCOUNT_KEY` environment variables to the corresponding variables for your Azure storage account.
+
+```bash
+docker run --name <container-name> \
+           -v $(pwd)/shared:/shared \
+           -e upload=az \
+           -e bucket=<storage-container-name> \
+           -e AZURE_ACCOUNT_NAME=<your-azure-storage-account-name> \
+           -e AZURE_ACCOUNT_KEY=<your-azure-storage-secret-key> \
+           flan_scan
+
+
+```
+
 Deploying on Kubernetes
 -----------------------
 
