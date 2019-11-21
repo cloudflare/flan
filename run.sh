@@ -23,6 +23,9 @@ function upload {
     elif [ $upload = "gcp" ]
     then
         python /gcp_push.py $1
+    elif [ $upload = "az" ]
+    then
+        python /az_push.py $1
     fi
 }
 
