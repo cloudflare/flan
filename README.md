@@ -106,8 +106,8 @@ docker run --name <container-name> \
            -v $(pwd)/shared:/shared \
            -e upload=az \
            -e bucket=<storage-container-name> \
-           -e AZURE_ACCOUNT_NAME=<your-azure-storage-account-name> \
-           -e AZURE_ACCOUNT_KEY=<your-azure-storage-secret-key> \
+           -e AZURE_ACCOUNT_URL=<your-azure-storage-account-url> \
+           -e AZURE_ACCOUNT_KEY=<your-azure-storage-secret-key-or-sas-string> \
            flan_scan
 
 
