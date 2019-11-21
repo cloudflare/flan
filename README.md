@@ -51,16 +51,16 @@ $ docker run -v $(shell pwd)/shared:/shared flan_scan <Nmap-flags>
 Pushing Results to the Cloud
 ----------------------------
 
-Flan Scan currently supports pushing Latex reports and raw XML Nmap output files to a GCS Bucket or to an AWS S3 Bucket. Flan Scan requires 2 environment variables to push results to the cloud. The first is `upload` which takes one of two values `gcp` or `aws`. The second is `bucket` and the value is the name of the S3 or GCS Bucket to upload the results to. To set the environment variables, after running `make build` run the container setting the environment variables like so:
+Flan Scan currently supports pushing Latex reports and raw XML Nmap output files to a GCS Bucket, AWS S3 Bucket, or an Azure Storage account. Flan Scan requires 2 environment variables to push results to the cloud. The first is `upload` which takes one of three values `gcp` or `aws` or `az`. The second is `bucket` and the value is the name of the S3 or GCS Bucket or Azure Container to upload the results to. To set the environment variables, after running `make build` run the container setting the environment variables like so:
 ```bash
 $ docker run --name <container-name> \
              -v $(pwd)/shared:/shared \
-             -e upload=<gcp or aws> \
+             -e upload=<gcp or aws or az> \
              -e bucket=<bucket-name> \
              flan_scan
 ```
 
-Below are some examples for adding the necessary AWS or GCP authentication keys as environment variables in container. However, this can also be accomplished with a secret in Kubernetes that exposes the necessary environment variables or with other secrets management tools.
+Below are some examples for adding the necessary AWS, GCP, or Azure authentication keys as environment variables in container. However, this can also be accomplished with a secret in Kubernetes that exposes the necessary environment variables or with other secrets management tools.
 
 
 ### Example GCS Bucket Configuration
