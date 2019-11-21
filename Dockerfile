@@ -10,6 +10,8 @@ RUN pip install google-cloud-storage
 RUN pip install boto3
 RUN pip install azure-storage-blob
 
+RUN apk del build-base
+
 RUN git clone https://github.com/vulnersCom/nmap-vulners /usr/share/nmap/scripts/vulners
 RUN nmap --script-updatedb
 RUN mkdir /shared
