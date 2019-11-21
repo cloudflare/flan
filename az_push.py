@@ -1,6 +1,6 @@
 import sys
 import os
-from azure.storage.blob import BlockBlobService
+from azure.storage.blob import BlobServiceClient
 
 filename = sys.argv[1]
 
@@ -14,6 +14,6 @@ try:
 
     with open(filename, "rb") as data:
         blob_client.upload_blob(data)
-except Exception, e:
+except Exception as e:
     print('Error uploading to azure')
     print(e)

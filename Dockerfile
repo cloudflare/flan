@@ -3,6 +3,7 @@ FROM python:3.5-alpine
 RUN apk add nmap
 RUN apk add nmap-scripts
 RUN apk add git
+RUN apk add build-base libffi-dev openssl-dev
 
 RUN pip install xmltodict
 RUN pip install google-cloud-storage
