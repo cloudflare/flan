@@ -103,7 +103,7 @@ Deploying on Kubernetes
 When deploying Flan Scan to a container orchestration system, such as Kubernetes, you must ensure that the container has access to a file called `ips.txt` at the directory `/`. In Kubernetes, this can be done with a ConfigMap which will mount a file on your local filesystem as a volume that the container can access once deployed. The `kustomization.yaml` file has an example of how to create a ConfigMap called `shared-files`. This ConfigMap is then mounted as a volume in the `deployment.yaml` file.
 
 Here are some easy steps to deploy Flan Scan on Kubernetes:
-1. To create the the ConfigMap add a path to a local `ips.txt` file in `kustomization.yaml` and then run `kubectl apply -k .`.
+1. To create the ConfigMap add a path to a local `ips.txt` file in `kustomization.yaml` and then run `kubectl apply -k .`.
 2. Now run `kubectl get configmap` to make sure the ConfigMap was created properly.
 3. Set the necessary environment variables and secrets for your cloud provider within `deployment.yaml`.
 4. Now run `kubectl apply -f deployment.yaml` to launch a deployment running Flan Scan.
