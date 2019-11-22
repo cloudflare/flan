@@ -207,6 +207,8 @@ def parse_nmap_command(raw_command):
 
 def main():
     dirname = sys.argv[1]
+    nmap_command = ""
+    start_date = ""
 
     for i, filename in enumerate(os.listdir(dirname)):
         f = open(dirname + "/" + filename)
