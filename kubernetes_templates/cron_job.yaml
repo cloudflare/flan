@@ -1,0 +1,35 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: flan-scan-job
+spec:
+   schedule: "<SCHEDULE HERE>"
+   jobTemplate:
+      spec:
+        template:
+           metadata:
+             labels:
+               app: flanscan
+           spec:
+               volumes:
+               - name: cloud-key
+                 secret:
+                   secretName: cloudkey-key
+               - name: shared-files
+                 configMap:
+                     name: shared-files
+               restartPolicy: OnFailure
+               containers:
+               - name: flan-scan-svc
+                 image: <REFERENCE TO REGISTRY FOR CONTAINER>
+                 imagePullPolicy: IfNotPresent
+                 volumeMounts:
+                     - name: cloud-key
+                       mountPath: /var/secrets/google
+                     - name: shared-files
+                       mountPath: /shared
+                 env:
+                     - name: upload
+                       value: <GCP_OR_AWS>
+                     - name: bucket
+                       value: <BUCKET_NAME>
