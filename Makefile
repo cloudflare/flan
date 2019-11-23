@@ -5,4 +5,4 @@ build :
 
 container_name = flan_$(shell date +'%s')
 start : 
-	$(SUDO) docker run --name $(container_name) -v $(shell pwd)/shared:/shared flan_scan
+	$(SUDO) docker run --rm --name $(container_name) -v $(shell pwd)/shared:/shared flan_scan
