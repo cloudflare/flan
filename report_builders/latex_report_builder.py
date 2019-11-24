@@ -68,8 +68,6 @@ class LatexReportBuilder(ReportBuilder):
         self._append('\end{enumerate}\n')
 
     def add_non_vulnerable_services(self, scan_results: Dict[str, ScanResult]):
-        self._append('''\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt,
-                label=\\textbf{\large \\arabic{enumi} \large}]\n''')
         for app_name, result in scan_results.items():
             self._append('\item \\textbf{\large ' + app_name + ' \large}\n\\begin{itemize}\n')
             locations = result.locations
