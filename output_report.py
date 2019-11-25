@@ -95,13 +95,14 @@ def parse_host(host):
 
 
 def parse_results(data):
-    hosts = data['nmaprun']['host']
+    if 'host' in data['nmaprun'].keys(): 
+        hosts = data['nmaprun']['host']
 
-    if isinstance(hosts, list):
-        for h in hosts:
-            parse_host(h)
-    else:
-        parse_host(hosts)
+        if isinstance(hosts, list):
+            for h in hosts:
+                parse_host(h)
+        else:
+            parse_host(hosts)
 
 
 def convert_severity(sev):
