@@ -1,9 +1,9 @@
 from collections import defaultdict
-from typing import Dict, Any, Collection, List, Set
+from typing import Dict, Any, List, Set
 
 import xmltodict
 
-from internal_types import ScanResult, Vuln
+from contrib.internal_types import ScanResult, Vuln
 
 
 __all__ = ['FlanXmlParser']
@@ -51,7 +51,7 @@ class FlanXmlParser:
         else:
             self.parse_host(hosts)
 
-    def parse_vuln(self, app_name: str, vuln: Collection[Dict[str, Any]]):
+    def parse_vuln(self, app_name: str, vuln: List[Dict[str, Any]]):
         vuln_name = ''
         severity = ''
         vuln_type = ''

@@ -1,7 +1,6 @@
 import abc
-from requests import Session, HTTPError
 
-__all__ = ['VulnDescriptionProvider', 'CveProjectProvider']
+__all__ = ['VulnDescriptionProvider']
 
 
 class VulnDescriptionProvider(metaclass=abc.ABCMeta):

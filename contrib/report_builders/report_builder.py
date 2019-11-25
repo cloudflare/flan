@@ -1,7 +1,7 @@
 import abc
 from typing import Any, Dict
 
-from internal_types import ScanResult
+from contrib.internal_types import ScanResult
 
 
 __all__ = ['ReportBuilder']

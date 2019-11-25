@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
-from descriptions import VulnDescriptionProvider
-from report_builders import ReportBuilder
-from internal_types import ScanResult, SeverityLevels
+from contrib.descriptions import VulnDescriptionProvider
+from contrib.report_builders import ReportBuilder
+from contrib.internal_types import ScanResult, SeverityLevels
 
 __all__ = ['LatexReportBuilder']
 

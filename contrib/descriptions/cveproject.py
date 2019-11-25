@@ -1,6 +1,6 @@
 from requests import Session, HTTPError
 
-from descriptions import VulnDescriptionProvider
+from contrib.descriptions import VulnDescriptionProvider
 
 
 __all__ = ['CveProjectProvider']
