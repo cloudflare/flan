@@ -4,9 +4,9 @@ from typing import IO
 
 from requests import Session
 
-from descriptions import CveProjectProvider
-from parsers import FlanXmlParser
-from report_builders import ReportBuilder, LatexReportBuilder
+from contrib.descriptions import CveProjectProvider
+from contrib.parsers import FlanXmlParser
+from contrib.report_builders import ReportBuilder, LatexReportBuilder
 
 
 def create_report(parser: FlanXmlParser, builder: ReportBuilder, nmap_command: str, start_date: str, output_writer: IO,
