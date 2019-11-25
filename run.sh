@@ -39,7 +39,7 @@ do
   upload $xml_dir/$filename
 done < /shared/ips.txt
 
-python /output_report.py $root_dir$xml_dir $root_dir$report_file /shared/ips.txt 
+python /output_report.py $root_dir$xml_dir $root_dir$report_file /shared/ips.txt
 sed -i 's/_/\\_/g' $root_dir$report_file
 sed -i 's/\$/\\\$/g' $root_dir$report_file
 sed -i 's/#/\\#/g' $root_dir$report_file
