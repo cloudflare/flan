@@ -9,11 +9,6 @@ from parsers import FlanXmlParser
 from report_builders import ReportBuilder, LatexReportBuilder
 
 
-def read_file(path: str):
-    with open(path) as f:
-        return f.read()
-
-
 def create_report(parser: FlanXmlParser, builder: ReportBuilder, nmap_command: str, start_date: str, output_writer: IO,
                   ip_reader: IO):
 

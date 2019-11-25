@@ -1,1 +1,2 @@
-from .description_provider import VulnDescriptionProvider, CveProjectProvider
+from .description_provider import VulnDescriptionProvider
+from .cveproject import CveProjectProvider
