@@ -47,8 +47,7 @@ class LatexReportBuilder(ReportBuilder):
                 self._append('\\begin{figure}[h!]\n')
                 self._append('\\begin{tabular}{|p{16cm}|}\\rowcolor[HTML]{'
                              + self.colors[severity_name]
-                             + '''} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash}
-                           p{0.5cm}@{}}\\textbf{'''
+                             + '} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash} p{0.5cm}@{}}\\textbf{'
                              + v.name + ' ' + severity_name + ' ('
                              + str(v.severity)
                              + ')} & \href{https://nvd.nist.gov/vuln/detail/'
@@ -60,8 +59,7 @@ class LatexReportBuilder(ReportBuilder):
 
             self._append('\FloatBarrier\n\\textbf{The above '
                          + str(num_vulns)
-                         + ''' vulnerabilities apply to these network locations:}\n
-                         \\begin{itemize}\n''')
+                         + ' vulnerabilities apply to these network locations:}\n\\begin{itemize}\n')
             for addr in locations:
                 self._append('\item ' + addr + ' Ports: ' + str(locations[addr]) + '\n')
             self._append('\\\\ \\\\ \n \end{itemize}\n')
@@ -77,8 +75,8 @@ class LatexReportBuilder(ReportBuilder):
         self._append('\end{enumerate}\n')
 
     def initialize_section(self):
-        self._append('''\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt,
-                        label=\\textbf{\large \\arabic{enumi} \large}]\n''')
+        self._append('\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt, label=\\textbf{\large \\arabic{enumi} '
+                     '\large}]\n')
 
     def add_vulnerable_section(self):
         self._append('\section*{Services with Vulnerabilities}')

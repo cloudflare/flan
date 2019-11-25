@@ -73,6 +73,7 @@ class FlanXmlParser:
                 self.parse_vuln(app_name, vuln['elem'])
         else:
             self.parse_vuln(app_name, script_table['elem'])
+        pass
 
     def parse_port(self, ip_addr: str, port: Dict[str, Any]):
         if port['state']['@state'] == 'closed':
@@ -80,9 +81,10 @@ class FlanXmlParser:
 
         app_name = self.get_app_name(port['service'])
         port_num = port['@portid']
-
+        new_app = app_name not in self.results
         self.results[app_name].locations[ip_addr].append(port_num)
-        if 'script' in port:
+
+        if new_app and 'script' in port:  # vulnerabilities parsed only if this app didn't appear before
             scripts = port['script']
             if isinstance(scripts, list):
                 for s in scripts:
