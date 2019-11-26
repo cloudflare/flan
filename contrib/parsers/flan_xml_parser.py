@@ -43,6 +43,9 @@ class FlanXmlParser:
         Parse xmltodict output and fill internal collections
         :param data: xmltodict output
         """
+        if 'host' not in data['nmaprun']:
+            return
+
         hosts = data['nmaprun']['host']
 
         if isinstance(hosts, list):
@@ -65,7 +68,11 @@ class FlanXmlParser:
 
         self.results[app_name].vulns.append(Vuln(vuln_name, vuln_type, severity))
 
-    def parse_script(self, app_name: str, script: Dict[str, Any]):
+    def parse_script(self, ip_addr: str, port: str, app_name: str, script: Dict[str, Any]):
+        if 'table' not in script:
+            print('ERROR in script: ' + script['@output'] + " at location: " + ip_addr + " port: " + port + " app: " +
+                  app_name)
+            return
         self.vulnerable_services.append(app_name)
         script_table = script['table']['table']
         if isinstance(script_table, list):
@@ -88,13 +95,24 @@ class FlanXmlParser:
             if isinstance(scripts, list):
                 for s in scripts:
                     if s['@id'] == 'vulners':
-                        self.parse_script(app_name, s)
+                        self.parse_script(ip_addr, port_num, app_name, s)
             else:
                 if scripts['@id'] == 'vulners':
-                    self.parse_script(app_name, scripts)
+                    self.parse_script(ip_addr, port_num, app_name, scripts)
 
     def parse_host(self, host: Dict[str, Any]):
-        ip_addr = host['address']['@addr']
+        addresses = host['address']
+        ip_addr = ''
+        if isinstance(addresses, list):
+            for addr in addresses:
+                if "ip" in addr['@addrtype']:
+                    ip_addr = addr['@addr']
+        else:
+            ip_addr = addresses['@addr']
+
+        if not ip_addr:
+            return
+
         if host['status']['@state'] == 'up' and 'port' in host['ports']:
             ports = host['ports']['port']
             if isinstance(ports, list):

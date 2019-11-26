@@ -29,10 +29,9 @@ class Vuln:
         """
         if severity < 4:
             return 'Low'
-        elif severity < 7:
+        if severity < 7:
             return 'Medium'
-        else:
-            return 'High'
+        return 'High'
 
     @property
     def severity_str(self) -> str:
