@@ -84,7 +84,14 @@ def parse_port(ip_addr, port):
 
 
 def parse_host(host):
-    ip_addr = host['address']['@addr']
+    addresses = host['address']
+    if isinstance(addresses, list):
+        for addr in addresses:
+            if "ip" in addr['@addrtype']:
+                ip_addr = addr['@addr']
+    else: 
+        ip_addr = addresses['@addr']
+
     if host['status']['@state'] == 'up' and 'port' in host['ports'].keys():
         ports = host['ports']['port']
         if isinstance(ports, list):
