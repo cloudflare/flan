@@ -31,13 +31,16 @@ def parse_vuln(ip_addr, port, app_name, vuln):
 
 
 def parse_script(ip_addr, port, app_name, script):
-    vulnerable_services.append(app_name)
-    script_table = script['table']['table']
-    if isinstance(script_table, list):
-        for vuln in script_table:
-            parse_vuln(ip_addr, port, app_name, vuln['elem'])
+    if 'table' in script.keys():
+        vulnerable_services.append(app_name)
+        script_table = script['table']['table']
+        if isinstance(script_table, list):
+            for vuln in script_table:
+                parse_vuln(ip_addr, port, app_name, vuln['elem'])
+        else:
+            parse_vuln(ip_addr, port, app_name, script_table['elem'])
     else:
-        parse_vuln(ip_addr, port, app_name, script_table['elem'])
+        print('ERROR in script: ' + ip_addr + port + app_name)
 
 
 def get_app_name(service):
