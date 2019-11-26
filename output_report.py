@@ -40,7 +40,7 @@ def parse_script(ip_addr, port, app_name, script):
         else:
             parse_vuln(ip_addr, port, app_name, script_table['elem'])
     else:
-        print('ERROR in script: ' + ip_addr + port + app_name)
+        print('ERROR in script: ' + script['@output'] + " at location: " + ip_addr + " port: " + port + " app: " + app_name)
 
 
 def get_app_name(service):
