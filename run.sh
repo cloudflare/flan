@@ -30,6 +30,18 @@ function get_filename(){
     echo $1 | tr / -
 }
 
+if [[ -z $generate_ips ]]
+then
+    if [[ $generate_ips == *"aws"* ]]
+    then
+        python /aws_listip.py
+    fi
+    if [[ $generate_ips == *"gcp"* ]]
+    then
+        python /gcp_listip.py
+    fi
+fi
+
 mkdir $root_dir$xml_dir
 while IFS= read -r line
 do

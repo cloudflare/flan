@@ -97,6 +97,22 @@ docker run --name <container-name> \
 
 ```
 
+Autogenerate IP List
+--------------------
+Flan Scan currenty support autogenerate IP list from your running instances in GCP and AWS. You need additional environment variables to do that which is `generate_ips` which take value of `aws` and/or `gcp`. You can use both by using comma as separator like `aws,gcp`.
+
+### Example Autogenerate IP List
+
+```bash
+$ docker run --name <container-name> \
+             -v $(pwd)/shared:/shared \
+             -e upload=gcp \
+             -e bucket=<bucket-name> \
+             -e GOOGLE_APPLICATION_CREDENTIALS=/shared/key.json \
+             -e generate_ips=gcp
+             flan_scan
+```
+
 Deploying on Kubernetes
 -----------------------
 
