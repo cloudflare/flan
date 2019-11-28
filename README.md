@@ -20,6 +20,7 @@ $ docker --version
 ```bash
 $ make build
 ```
+  (or alternatively, pull it from Dockerhub: `make pull`)
 
 5. Start scanning!
 ```bash
