@@ -7,7 +7,7 @@ project_id = os.getenv("PROJECT_ID")
 client = googleapiclient.discovery.build('compute', 'v1')
 
 compute = client.instances()
-zones = client.zones().list(project_id).execute()
+zones = client.zones().list(project=project_id).execute()
 
 ips = []
 
