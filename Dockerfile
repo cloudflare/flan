@@ -7,7 +7,7 @@ RUN pip install --no-cache-dir xmltodict google-cloud-storage google-api-python-
 RUN git clone https://github.com/vulnersCom/nmap-vulners /usr/share/nmap/scripts/vulners && nmap --script-updatedb
 RUN mkdir /shared
 
-COPY run.sh output_report.py latex_header.tex gcp_push.py aws_push.py gcp_listip.py aws_listip.py /
+COPY run.sh output_report.py latex_header.tex gcp_push.py aws_push.py list_ip.py /
 COPY shared /shared
 
 RUN chmod +x /run.sh

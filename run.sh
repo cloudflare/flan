@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [[ ! -z $generate_ips ]]
+then
+    python /list_ip.py
+fi
+
 current_time=$(date "+%Y.%m.%d-%H.%M")
 if [[ -z $upload ]]
 then
@@ -13,7 +18,7 @@ fi
 xml_dir=xml_files/$current_time
 report_file=reports/report_$current_time.tex
 
-function upload {
+function upload() {
     if [[ -z $upload ]]
     then
         return
@@ -29,18 +34,6 @@ function upload {
 function get_filename(){
     echo $1 | tr / -
 }
-
-if [[ -z $generate_ips ]]
-then
-    if [[ $generate_ips == *"aws"* ]]
-    then
-        python /aws_listip.py
-    fi
-    if [[ $generate_ips == *"gcp"* ]]
-    then
-        python /gcp_listip.py
-    fi
-fi
 
 mkdir $root_dir$xml_dir
 while IFS= read -r line
