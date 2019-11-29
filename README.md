@@ -99,18 +99,31 @@ docker run --name <container-name> \
 
 Autogenerate IP List
 --------------------
+
 Flan Scan currenty support autogenerate IP list from your running instances in GCP and AWS. You need additional environment variables to do that which is `generate_ips` which take value of `aws` and/or `gcp`. You can use both by using comma as separator like `aws,gcp`.
 
-### Example Autogenerate IP List
+### Example Autogenerate IP List in GCP
+
+You still need to set `GOOGLE_APPLICATION_CREDENTIALS` but you don't need to mount any volume to the container.
 
 ```bash
-$ docker run --name <container-name> \
-             -v $(pwd)/shared:/shared \
-             -e upload=gcp \
-             -e bucket=<bucket-name> \
-             -e GOOGLE_APPLICATION_CREDENTIALS=/shared/key.json \
-             -e generate_ips=gcp
-             flan_scan
+docker run --name <container-name> \
+           -e GOOGLE_APPLICATION_CREDENTIALS=<your-service-account>.json \
+           -e PROJECT_ID=<your-project-id> \
+           -e generate_ips=gcp \
+           flan_scan
+```
+
+### Example Autogenerate IP List in AWS
+
+You still need to set `GOOGLE_APPLICATION_CREDENTIALS` but you don't need to mount any volume to the container.
+
+```bash
+docker run --name <container-name> \
+           -e AWS_ACCESS_KEY_ID=<your-aws-access-key-id> \
+           -e AWS_SECRET_ACCESS_KEY=<your-aws-secret-access-key> \
+           -e generate_ips=aws \
+           flan_scan
 ```
 
 Deploying on Kubernetes
