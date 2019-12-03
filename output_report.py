@@ -31,13 +31,16 @@ def parse_vuln(ip_addr, port, app_name, vuln):
 
 
 def parse_script(ip_addr, port, app_name, script):
-    vulnerable_services.append(app_name)
-    script_table = script['table']['table']
-    if isinstance(script_table, list):
-        for vuln in script_table:
-            parse_vuln(ip_addr, port, app_name, vuln['elem'])
+    if 'table' in script.keys():
+        vulnerable_services.append(app_name)
+        script_table = script['table']['table']
+        if isinstance(script_table, list):
+            for vuln in script_table:
+                parse_vuln(ip_addr, port, app_name, vuln['elem'])
+        else:
+            parse_vuln(ip_addr, port, app_name, script_table['elem'])
     else:
-        parse_vuln(ip_addr, port, app_name, script_table['elem'])
+        print('ERROR in script: ' + script['@output'] + " at location: " + ip_addr + " port: " + port + " app: " + app_name)
 
 
 def get_app_name(service):
@@ -84,7 +87,14 @@ def parse_port(ip_addr, port):
 
 
 def parse_host(host):
-    ip_addr = host['address']['@addr']
+    addresses = host['address']
+    if isinstance(addresses, list):
+        for addr in addresses:
+            if "ip" in addr['@addrtype']:
+                ip_addr = addr['@addr']
+    else: 
+        ip_addr = addresses['@addr']
+
     if host['status']['@state'] == 'up' and 'port' in host['ports'].keys():
         ports = host['ports']['port']
         if isinstance(ports, list):
@@ -95,13 +105,14 @@ def parse_host(host):
 
 
 def parse_results(data):
-    hosts = data['nmaprun']['host']
+    if 'host' in data['nmaprun'].keys(): 
+        hosts = data['nmaprun']['host']
 
-    if isinstance(hosts, list):
-        for h in hosts:
-            parse_host(h)
-    else:
-        parse_host(hosts)
+        if isinstance(hosts, list):
+            for h in hosts:
+                parse_host(h)
+        else:
+            parse_host(hosts)
 
 
 def convert_severity(sev):
@@ -128,60 +139,64 @@ def create_latex(nmap_command, start_date):
     f = open('./latex_header.tex')
     write_buffer = f.read()
     f.close()
-    
+
     output_file = sys.argv[2]
     ip_file = sys.argv[3]
-  
+
     write_buffer += "Flan Scan ran a network vulnerability scan with the following Nmap command on " \
                  + start_date \
                  + "UTC.\n\\begin{lstlisting}\n" \
                  + nmap_command \
                  + "\n\end{lstlisting}\nTo find out what IPs were scanned see the end of this report.\n"
     write_buffer += "\section*{Services with Vulnerabilities}"
-    write_buffer += """\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt,
-                    label=\\textbf{\large \\arabic{enumi} \large}]\n"""
-    for s in vulnerable_services:
-        write_buffer += '\item \\textbf{\large ' + s + ' \large}'
-        vulns = results[s]['vulns']
-        locations = results[s]['locations']
-        num_vulns = len(vulns)
+    if vulnerable_services:
+        write_buffer += """\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt,
+                        label=\\textbf{\large \\arabic{enumi} \large}]\n"""
+        for s in vulnerable_services:
+            write_buffer += '\item \\textbf{\large ' + s + ' \large}'
+            vulns = results[s]['vulns']
+            locations = results[s]['locations']
+            num_vulns = len(vulns)
 
-        for i, v in enumerate(vulns):
-            write_buffer += '\\begin{figure}[h!]\n'
-            severity_name = convert_severity(v['severity'])
-            write_buffer += '\\begin{tabular}{|p{16cm}|}\\rowcolor[HTML]{' \
-            		    + colors[severity_name] \
-                            + """} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash}
-                              p{0.5cm}@{}}\\textbf{""" \
-                            + v['name'] + ' ' + severity_name + ' (' \
-                            + str(v['severity']) \
-                            + ')} & \href{https://nvd.nist.gov/vuln/detail/' \
-                            + v['name'] + '}{\large \\faicon{link}}' \
-                            + '\end{tabular}\\\\\n Summary:' \
-                            + get_description(v['name'], v['type']) \
-                            + '\\\\ \hline \end{tabular}  '
-            write_buffer += '\end{figure}\n'
-        write_buffer += '\FloatBarrier\n\\textbf{The above ' \
-                        + str(num_vulns) \
-                        + """ vulnerabilities apply to these network locations:}\n
-                          \\begin{itemize}\n"""
-        for addr in locations.keys():
-            write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr])+ '\n'
-        write_buffer += '\\\\ \\\\ \n \end{itemize}\n'
-    write_buffer += '\end{enumerate}\n'
+            for i, v in enumerate(vulns):
+                write_buffer += '\\begin{figure}[h!]\n'
+                severity_name = convert_severity(v['severity'])
+                write_buffer += '\\begin{tabular}{|p{16cm}|}\\rowcolor[HTML]{' \
+                         + colors[severity_name] \
+                         + """} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash}
+                           p{0.5cm}@{}}\\textbf{""" \
+                         + v['name'] + ' ' + severity_name + ' (' \
+                         + str(v['severity']) \
+                         + ')} & \href{https://nvd.nist.gov/vuln/detail/' \
+                         + v['name'] + '}{\large \\faicon{link}}' \
+                         + '\end{tabular}\\\\\n Summary:' \
+                         + get_description(v['name'], v['type']) \
+                         + '\\\\ \hline \end{tabular}  '
+                write_buffer += '\end{figure}\n'
+
+            write_buffer += '\FloatBarrier\n\\textbf{The above ' \
+                         + str(num_vulns) \
+                         + """ vulnerabilities apply to these network locations:}\n
+                         \\begin{itemize}\n"""
+            for addr in locations.keys():
+                write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr])+ '\n'
+            write_buffer += '\\\\ \\\\ \n \end{itemize}\n'
+        write_buffer += '\end{enumerate}\n'
 
     non_vuln_services = list(set(results.keys()) - set(vulnerable_services))
     write_buffer += '\section*{Services With No Known Vulnerabilities}'
-    write_buffer += """\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt,
-    label=\\textbf{\large \\arabic{enumi} \large}]\n"""
-    for ns in non_vuln_services:
-        write_buffer += '\item \\textbf{\large ' + ns \
-                        + ' \large}\n\\begin{itemize}\n'
-        locations = results[ns]['locations']
-        for addr in locations.keys():
-            write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr])+ '\n'
-        write_buffer += '\end{itemize}\n'
-    write_buffer += '\end{enumerate}\n'
+
+    if non_vuln_services:
+        write_buffer += """\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt,
+        label=\\textbf{\large \\arabic{enumi} \large}]\n"""
+        for ns in non_vuln_services:
+            write_buffer += '\item \\textbf{\large ' + ns \
+                            + ' \large}\n\\begin{itemize}\n'
+            locations = results[ns]['locations']
+            for addr in locations.keys():
+                write_buffer += '\item ' + addr + ' Ports: ' + str(locations[addr])+ '\n'
+            write_buffer += '\end{itemize}\n'
+        write_buffer += '\end{enumerate}\n'
 
     write_buffer += '\section*{List of IPs Scanned}'
     write_buffer += '\\begin{itemize}\n'
@@ -203,6 +218,8 @@ def parse_nmap_command(raw_command):
 
 def main():
     dirname = sys.argv[1]
+    nmap_command = ""
+    start_date = ""
 
     for i, filename in enumerate(os.listdir(dirname)):
         f = open(dirname + "/" + filename)
