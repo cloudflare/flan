@@ -30,6 +30,23 @@ function get_filename(){
     echo $1 | tr / -
 }
 
+function export_report {
+  if [[ -z $export ]]
+  then
+    return
+  elif [ $export = "latex" ]
+  then
+    python export_latex.py $1 $2 $3
+    sed -i 's/_/\\_/g' $2
+    sed -i 's/\$/\\\$/g' $2
+    sed -i 's/#/\\#/g' $2
+    sed -i 's/%/\\%/g' $2
+  elif [ $export = "neo4j" ]
+  then
+    python export_neo4j.py $root_dir$xml_dir
+  fi
+}
+
 mkdir $root_dir$xml_dir
 while IFS= read -r line
 do
@@ -39,9 +56,6 @@ do
   upload $xml_dir/$filename
 done < /shared/ips.txt
 
-python /output_report.py $root_dir$xml_dir $root_dir$report_file /shared/ips.txt
-sed -i 's/_/\\_/g' $root_dir$report_file
-sed -i 's/\$/\\\$/g' $root_dir$report_file
-sed -i 's/#/\\#/g' $root_dir$report_file
-sed -i 's/%/\\%/g' $root_dir$report_file
+python /parse_report.py $root_dir$xml_dir
+export_report $root_dir$xml_dir $root_dir$report_file /shared/ips.txt
 upload $report_file
