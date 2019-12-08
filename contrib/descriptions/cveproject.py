@@ -1,7 +1,6 @@
 from requests import Session, HTTPError
 
-from contrib.descriptions import VulnDescriptionProvider
-
+from contrib.descriptions import VulnDescriptionProvider, VulnDescription
 
 __all__ = ['CveProjectProvider']
 
@@ -16,7 +15,7 @@ class CveProjectProvider(VulnDescriptionProvider):
         self.sess = session
         self.cache = {}
 
-    def get_description(self, vuln: str, vuln_type: str) -> str:
+    def get_description(self, vuln: str, vuln_type: str) -> VulnDescription:
         if vuln in self.cache:
             return self.cache[vuln]
 
@@ -30,8 +29,8 @@ class CveProjectProvider(VulnDescriptionProvider):
                 cve_json = response.json()
                 description = cve_json['description']['description_data'][0]['value']
                 self.cache[vuln] = description
-                return description
+                return VulnDescription(description, url)
         except HTTPError as he:
-            return 'Description fetching error: ' + str(he)
+            return VulnDescription('', 'Description fetching error: ' + str(he))
 
-        return ''
+        return VulnDescription('', '')

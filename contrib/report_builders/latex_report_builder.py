@@ -42,7 +42,8 @@ class LatexReportBuilder(ReportBuilder):
             locations = report.locations
             num_vulns = len(vulns)
 
-            for i, v in enumerate(vulns):
+            for v in vulns:
+                description = self.description_provider.get_description(v.name, v.vuln_type)
                 severity_name = v.severity_str
                 self._append('\\begin{figure}[h!]\n')
                 self._append('\\begin{tabular}{|p{16cm}|}\\rowcolor[HTML]{'
@@ -50,10 +51,10 @@ class LatexReportBuilder(ReportBuilder):
                              + '} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash} p{0.5cm}@{}}\\textbf{'
                              + v.name + ' ' + severity_name + ' ('
                              + str(v.severity)
-                             + ')} & \href{https://nvd.nist.gov/vuln/detail/'
-                             + v.name + '}{\large \\faicon{link}}'
+                             + ')} & \href{' + description.url
+                             + '}{\large \\faicon{link}}'
                              + '\end{tabular}\\\\\n Summary:'
-                             + self.description_provider.get_description(v.name, v.vuln_type)
+                             + description.text
                              + '\\\\ \hline \end{tabular}  ')
                 self._append('\end{figure}\n')
 

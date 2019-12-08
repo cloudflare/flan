@@ -6,7 +6,7 @@ from requests import Session
 
 from contrib.descriptions import CveProjectProvider
 from contrib.parsers import FlanXmlParser
-from contrib.report_builders import ReportBuilder, LatexReportBuilder
+from contrib.report_builders import ReportBuilder, LatexReportBuilder, MarkdownReportBuilder
 
 
 def create_report(parser: FlanXmlParser, builder: ReportBuilder, nmap_command: str, start_date: str, output_writer: IO,
@@ -38,12 +38,15 @@ def parse_nmap_command(raw_command: str) -> str:
     return ' '.join(nmap_split)
 
 
+def create_default_provider():
+    return CveProjectProvider(Session())
+
+
 def create_report_builder(report_type: str) -> ReportBuilder:
     if report_type == 'latex':
-        session = Session()
-        description_provider = CveProjectProvider(session)
-        report_bilder = LatexReportBuilder(description_provider)
-        return report_bilder
+        return LatexReportBuilder(create_default_provider())
+    if report_type == 'md':
+        return MarkdownReportBuilder(create_default_provider())
     raise NotImplementedError(report_type)
 
 

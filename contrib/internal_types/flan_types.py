@@ -1,5 +1,5 @@
 from collections import defaultdict
-
+from typing import List, Dict
 
 __all__ = ['SeverityLevels', 'Vuln', 'ScanResult']
 
@@ -46,5 +46,5 @@ class ScanResult:
     Scan result representation
     """
     def __init__(self):
-        self.locations = defaultdict(list)
-        self.vulns = []
+        self.locations = defaultdict(list)  # type: Dict[str, List[str]]
+        self.vulns = []  # type: List[Vuln]
