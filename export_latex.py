@@ -124,7 +124,7 @@ def main():
         if path.splitext(filename)[1] == ".xml":
             xml_content = read_file(dirname + "/" + filename)
 
-            report_filename = dirname.split("/")[-2]
+            report_filename = dirname.split("/")[-1]
 
             report_content = read_file(dirname + report_filename  + ".json")
 

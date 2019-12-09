@@ -31,19 +31,16 @@ function get_filename(){
 }
 
 function export_report {
-  if [[ -z $export ]]
+  if  [ -z $export ] || [ $export = "latex" ];
   then
-    return
-  elif [ $export = "latex" ]
-  then
-    python export_latex.py $1 $2 $3
+    python /export_latex.py $1 $2 $3
     sed -i 's/_/\\_/g' $2
     sed -i 's/\$/\\\$/g' $2
     sed -i 's/#/\\#/g' $2
     sed -i 's/%/\\%/g' $2
   elif [ $export = "neo4j" ]
   then
-    python export_neo4j.py $root_dir$xml_dir
+    python /export_neo4j.py $root_dir$xml_dir
   fi
 }
 

@@ -127,7 +127,7 @@ def main():
 
     raw_report_file = dirname.split("/")
 
-    report_file = raw_report_file[-2]
+    report_file = raw_report_file[-1]
 
     vuln_svc_file = report_file + ".services"
 

@@ -97,6 +97,25 @@ docker run --name <container-name> \
 
 ```
 
+Pushing Results to a Graph Database (Neo4j)
+----------------------------
+
+Flan Scan currently supports updating a graph database with the information found in the scan. For this, Flan Scan requires 4 environment variables. The first is `export` which takes one of two values `latex` or `neo4j`, if none were provided, it will export the LaTeX formatted as usual. The other ones are related to the access to the Neo4j database, being: `NEO4J_URI`, `NEO4J_PASSWORD`, `NEO4J_USER`. Currently, [Kerberos](https://neo4j.com/docs/add-on/kerberos/current/) or other more complex auth schemes aren't implemented. Also, if none were provided for the container, it will use the default `neo4j` user and password, and will try to connect on `bolt://localhost:7687` as you can see in `export_neo4j.py` file.
+To set the environment variables, after running `make build` run the container setting the environment variables like so:
+
+
+```bash
+$ docker run --name <container-name> \
+             -v $(pwd)/shared:/shared \
+             -e export=neo4j \
+             -e NEO4J_URI=<bolt URL> \
+             -e NEO4J_PASSWORD=<Neo4j basic auth password> \
+             -e NEO4J_USER=<Neo4j basic auth user>
+             flan_scan
+```
+
+**NOTE: Neo4j exporting is not supported on K8s deployments yet.**
+
 Deploying on Kubernetes
 -----------------------
 
