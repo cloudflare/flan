@@ -10,6 +10,7 @@ class CveProjectProvider(VulnDescriptionProvider):
     Provides vulnerability descriptions using requests to CVEProject
     """
     uri_template = 'https://raw.githubusercontent.com/CVEProject/cvelist/master/{}/{}/{}.json'
+    nist_uri_template = 'https://nvd.nist.gov/vuln/detail/{}'
 
     def __init__(self, session: Session):
         self.sess = session
@@ -29,7 +30,7 @@ class CveProjectProvider(VulnDescriptionProvider):
                 cve_json = response.json()
                 description = cve_json['description']['description_data'][0]['value']
                 self.cache[vuln] = description
-                return VulnDescription(description, url)
+                return VulnDescription(description, self.nist_uri_template.format(vuln))
         except HTTPError as he:
             return VulnDescription('', 'Description fetching error: ' + str(he))
 
