@@ -8,6 +8,6 @@ s3_client = boto3.client('s3')
 try:
     response = s3_client.upload_file("/" + filename, os.getenv('bucket'),
                                      filename)
-except Exception, e:
+except Exception as e:
     print('Error uploading to s3')
     print(e)
