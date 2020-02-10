@@ -45,7 +45,7 @@ The `-oX` flag adds an XML version of the scan results to the `/shared/xml_files
 Nmap also allows you to run UDP scans and to scan IPv6 addresses. To add these and other flags to Scan Flan's Nmap command after running `make build` run the container and pass in you Nmap flags like so:
 
 ```bash
-$ docker run -v $(shell pwd)/shared:/shared flan_scan <Nmap-flags>
+$ docker run -v $(pwd)/shared:/shared flan_scan <Nmap-flags>
 ```
 
 Pushing Results to the Cloud
