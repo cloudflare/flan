@@ -1,6 +1,6 @@
 FROM python:3.5-alpine
 
-RUN apk add --no-cache nmap nmap-scripts git
+RUN apk add --no-cache nmap nmap-scripts git texlive-full
 
 RUN pip install --no-cache-dir xmltodict google-cloud-storage boto3
 

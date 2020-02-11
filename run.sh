@@ -12,6 +12,7 @@ fi
 
 xml_dir=xml_files/$current_time
 report_file=reports/report_$current_time.tex
+report_file_pdf=reports/report_$current_time.pdf
 
 function upload {
     if [[ -z $upload ]]
@@ -44,4 +45,11 @@ sed -i 's/_/\\_/g' $root_dir$report_file
 sed -i 's/\$/\\\$/g' $root_dir$report_file
 sed -i 's/#/\\#/g' $root_dir$report_file
 sed -i 's/%/\\%/g' $root_dir$report_file
+latexmk -pdf -outdir=$root_dir/reports $root_dir$report_file #make pdf
+popdir=`pwd` #pushd
+cd $root_dir/reports
+latexmk -c -f $root_dir$report_file #cleanup tex aux files
+cd $popdir #popd
 upload $report_file
+upload $report_file_pdf
+
