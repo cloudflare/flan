@@ -26,7 +26,7 @@ class LatexReportBuilder(ReportBuilder):
                      + start_date
                      + 'UTC.\n\\begin{lstlisting}\n'
                      + nmap_command
-                     + '\n\end{lstlisting}\nTo find out what IPs were scanned see the end of this report.\n')
+                     + '\n\\end{lstlisting}\nTo find out what IPs were scanned see the end of this report.\n')
 
     def build(self) -> Any:
         return self.buffer
@@ -37,7 +37,7 @@ class LatexReportBuilder(ReportBuilder):
 
     def add_vulnerable_services(self, scan_results: Dict[str, ScanResult]):
         for s, report in scan_results.items():
-            self._append('\item \\textbf{\large ' + s + ' \large}')
+            self._append('\\item \\textbf{\\large ' + s + ' \\large}')
             vulns = report.vulns
             locations = report.locations
             num_vulns = len(vulns)
@@ -51,50 +51,50 @@ class LatexReportBuilder(ReportBuilder):
                              + '} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash} p{0.5cm}@{}}\\textbf{'
                              + v.name + ' ' + severity_name + ' ('
                              + str(v.severity)
-                             + ')} & \href{' + description.url
-                             + '}{\large \\faicon{link}}'
-                             + '\end{tabular}\\\\\n Summary:'
+                             + ')} & \\href{' + description.url
+                             + '}{\\large \\faicon{link}}'
+                             + '\\end{tabular}\\\\\n Summary:'
                              + description.text
-                             + '\\\\ \hline \end{tabular}  ')
-                self._append('\end{figure}\n')
+                             + '\\\\ \\hline \\end{tabular}  ')
+                self._append('\\end{figure}\n')
 
-            self._append('\FloatBarrier\n\\textbf{The above '
+            self._append('\\FloatBarrier\n\\textbf{The above '
                          + str(num_vulns)
                          + ' vulnerabilities apply to these network locations:}\n\\begin{itemize}\n')
             for addr in locations:
-                self._append('\item ' + addr + ' Ports: ' + str(locations[addr]) + '\n')
-            self._append('\\\\ \\\\ \n \end{itemize}\n')
-        self._append('\end{enumerate}\n')
+                self._append('\\item ' + addr + ' Ports: ' + str(locations[addr]) + '\n')
+            self._append('\\\\ \\\\ \n \\end{itemize}\n')
+        self._append('\\end{enumerate}\n')
 
     def add_non_vulnerable_services(self, scan_results: Dict[str, ScanResult]):
         for app_name, result in scan_results.items():
-            self._append('\item \\textbf{\large ' + app_name + ' \large}\n\\begin{itemize}\n')
+            self._append('\\item \\textbf{\\large ' + app_name + ' \\large}\n\\begin{itemize}\n')
             locations = result.locations
             for addr in locations:
-                self._append('\item ' + addr + ' Ports: ' + str(locations[addr]) + '\n')
-            self._append('\end{itemize}\n')
-        self._append('\end{enumerate}\n')
+                self._append('\\item ' + addr + ' Ports: ' + str(locations[addr]) + '\n')
+            self._append('\\end{itemize}\n')
+        self._append('\\end{enumerate}\n')
 
     def initialize_section(self):
-        self._append('\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt, label=\\textbf{\large \\arabic{enumi} '
-                     '\large}]\n')
+        self._append('\\begin{enumerate}[wide, labelwidth=!, labelindent=0pt, label=\\textbf{\\large \\arabic{enumi} '
+                     '\\large}]\n')
 
     def add_vulnerable_section(self):
-        self._append('\section*{Services with Vulnerabilities}')
+        self._append('\\section*{Services with Vulnerabilities}')
 
     def add_non_vulnerable_section(self):
-        self._append('\section*{Services With No Known Vulnerabilities}')
+        self._append('\\section*{Services With No Known Vulnerabilities}')
 
     def add_ips_section(self):
-        self._append('\section*{List of IPs Scanned}')
+        self._append('\\section*{List of IPs Scanned}')
         self._append('\\begin{itemize}\n')
 
     def add_ip_address(self, ip: str):
-        self._append('\item ' + ip + '\n')
+        self._append('\\item ' + ip + '\n')
 
     def finalize(self):
-        self._append('\end{itemize}\n')
-        self._append('\end{document}')
+        self._append('\\end{itemize}\n')
+        self._append('\\end{document}')
 
     def _append(self, text: str):
         self.buffer += text
