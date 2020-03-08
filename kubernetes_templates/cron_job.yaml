@@ -33,3 +33,5 @@ spec:
                        value: <GCP_OR_AWS>
                      - name: bucket
                        value: <BUCKET_NAME>
+                     - name: format
+                       value: <REPORT_FORMAT>

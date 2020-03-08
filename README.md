@@ -26,6 +26,12 @@ $ make build
 $ make start
 ```
 
+6. To use another output format:
+```
+$ make html
+```
+Additional supported formats are *md* (markdown), *html* and *json*.
+
 When the scan finishes you will find a Latex report of the summarizing the scan in `shared/reports`. You can also see the raw XML output from Nmap in `shared/xml_files`.
 
 <div>
@@ -42,7 +48,7 @@ $ nmap -sV -oX /shared/xml_files -oN - -v1 $@ --script=vulners/vulners.nse <ip-a
 ```
 The `-oX` flag adds an XML version of the scan results to the `/shared/xml_files` directory and the `-oN -` flag outputs "normal" Nmap results to the console. The `-v1` flag increases the verbosity to 1 and the `-sV` flag runs a service detection scan (aside from Nmap's default port and SYN scans). The `--script=vulners/vulners.nse` is the script that matches the services detected with relevant CVEs.
 
-Nmap also allows you to run UDP scans and to scan IPv6 addresses. To add these and other flags to Scan Flan's Nmap command after running `make build` run the container and pass in you Nmap flags like so:
+Nmap also allows you to run UDP scans and to scan IPv6 addresses. To add these and other flags to Scan Flan's Nmap command after running `make build` run the container and pass in your Nmap flags like so:
 
 ```bash
 $ docker run -v $(pwd)/shared:/shared flan_scan <Nmap-flags>
@@ -57,6 +63,7 @@ $ docker run --name <container-name> \
              -v $(pwd)/shared:/shared \
              -e upload=<gcp or aws> \
              -e bucket=<bucket-name> \
+             -e format=<optional, one of: md, html or json> \
              flan_scan
 ```
 

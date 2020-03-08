@@ -4,9 +4,10 @@ from typing import IO
 
 from requests import Session
 
-from contrib.descriptions import CveProjectProvider
+from contrib.descriptions import CveProjectProvider, VulnDescriptionProvider
 from contrib.parsers import FlanXmlParser
-from contrib.report_builders import ReportBuilder, LatexReportBuilder, MarkdownReportBuilder
+from contrib.report_builders import ReportBuilder, LatexReportBuilder, MarkdownReportBuilder, JinjaHtmlReportBuilder, \
+    JsonReportBuilder
 
 
 def create_report(parser: FlanXmlParser, builder: ReportBuilder, nmap_command: str, start_date: str, output_writer: IO,
@@ -26,7 +27,7 @@ def create_report(parser: FlanXmlParser, builder: ReportBuilder, nmap_command: s
 
     builder.add_ips_section()
     for ip in ip_reader:
-        builder.add_ip_address(ip)
+        builder.add_ip_address(ip.strip())
 
     builder.finalize()
     output_writer.write(builder.build())
@@ -38,19 +39,26 @@ def parse_nmap_command(raw_command: str) -> str:
     return ' '.join(nmap_split)
 
 
-def create_default_provider():
+def create_default_provider() -> VulnDescriptionProvider:
     return CveProjectProvider(Session())
 
 
 def create_report_builder(report_type: str) -> ReportBuilder:
-    if report_type == 'latex':
-        return LatexReportBuilder(create_default_provider())
-    if report_type == 'md':
-        return MarkdownReportBuilder(create_default_provider())
-    raise NotImplementedError(report_type)
+    builder_map = {
+        'tex': lambda p: LatexReportBuilder(p),
+        'md': lambda p: MarkdownReportBuilder(p),
+        'html': lambda p: JinjaHtmlReportBuilder(p),
+        'json': lambda p: JsonReportBuilder(p)
+    }
+
+    if report_type not in builder_map:
+        raise NotImplementedError(report_type)
+
+    provider = create_default_provider()
+    return builder_map[report_type](provider)
 
 
-def main(dirname: str, output_file: str, ip_file: str, report_type: str = 'latex'):
+def main(dirname: str, output_file: str, ip_file: str, report_type: str = 'tex'):
     nmap_command = ''
     start_date = ''
     builder = create_report_builder(report_type)
@@ -69,4 +77,5 @@ def main(dirname: str, output_file: str, ip_file: str, report_type: str = 'latex
 
 
 if __name__ == '__main__':
-    main(*sys.argv[1:4], report_type='latex')
+    report_format = os.getenv('format', 'tex')
+    main(*sys.argv[1:4], report_type=report_format)
