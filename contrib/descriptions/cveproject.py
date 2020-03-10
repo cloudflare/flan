@@ -29,8 +29,9 @@ class CveProjectProvider(VulnDescriptionProvider):
                 response.raise_for_status()
                 cve_json = response.json()
                 description = cve_json['description']['description_data'][0]['value']
-                self.cache[vuln] = description
-                return VulnDescription(description, self.nist_uri_template.format(vuln))
+                vuln_description = VulnDescription(description, self.nist_uri_template.format(vuln))
+                self.cache[vuln] = vuln_description
+                return vuln_description
         except HTTPError as he:
             return VulnDescription('', 'Description fetching error: ' + str(he))
 

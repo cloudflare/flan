@@ -113,7 +113,7 @@ class FlanXmlParser:
         if not ip_addr:
             return
 
-        if host['status']['@state'] == 'up' and 'port' in host['ports']:
+        if host['status']['@state'] == 'up' and 'ports' in host.keys() and 'port' in host['ports']:
             ports = host['ports']['port']
             if isinstance(ports, list):
                 for p in ports:
