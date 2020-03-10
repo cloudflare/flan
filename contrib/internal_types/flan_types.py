@@ -22,6 +22,14 @@ class Vuln:
         self.vuln_type = vuln_type
         self.severity = severity
 
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'type': self.vuln_type,
+            'severity': self.severity,
+            'severity_str': self.severity_str
+        }
+
     @staticmethod
     def convert_severity(severity: float) -> str:
         """
