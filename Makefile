@@ -3,4 +3,4 @@ build :
 
 container_name = flan_$(shell date +'%s')
 start : 
-	docker run --name $(container_name) -v "$(pwd)/shared:/shared:Z" flan_scan
+	docker run --name $(container_name) -v "$(CURDIR)/shared:/shared:Z" flan_scan
