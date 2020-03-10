@@ -50,7 +50,7 @@ The `-oX` flag adds an XML version of the scan results to the `/shared/xml_files
 Nmap also allows you to run UDP scans and to scan IPv6 addresses. To add these and other flags to Scan Flan's Nmap command after running `make build` run the container and pass in your Nmap flags like so:
 
 ```bash
-$ docker run -v $(pwd)/shared:/shared flan_scan <Nmap-flags>
+$ docker run -v $(CURDIR)/shared:/shared flan_scan <Nmap-flags>
 ```
 
 Pushing Results to the Cloud
@@ -59,7 +59,7 @@ Pushing Results to the Cloud
 Flan Scan currently supports pushing Latex reports and raw XML Nmap output files to a GCS Bucket or to an AWS S3 Bucket. Flan Scan requires 2 environment variables to push results to the cloud. The first is `upload` which takes one of two values `gcp` or `aws`. The second is `bucket` and the value is the name of the S3 or GCS Bucket to upload the results to. To set the environment variables, after running `make build` run the container setting the environment variables like so:
 ```bash
 $ docker run --name <container-name> \
-             -v $(pwd)/shared:/shared \
+             -v $(CURDIR)/shared:/shared \
              -e upload=<gcp or aws> \
              -e bucket=<bucket-name> \
              -e format=<optional, one of: md, html or json> \
@@ -80,7 +80,7 @@ Run the container setting the `GOOGLE_APPLICATION_CREDENTIALS` environment varia
 
 ```bash
 $ docker run --name <container-name> \
-             -v $(pwd)/shared:/shared \
+             -v $(CURDIR)/shared:/shared \
              -e upload=gcp \
              -e bucket=<bucket-name> \
              -e GOOGLE_APPLICATION_CREDENTIALS=/shared/key.json
@@ -94,7 +94,7 @@ Set the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables to
 
 ```bash
 docker run --name <container-name> \
-           -v $(pwd)/shared:/shared \
+           -v $(CURDIR)/shared:/shared \
            -e upload=aws \
            -e bucket=<s3-bucket-name> \
            -e AWS_ACCESS_KEY_ID=<your-aws-access-key-id> \
