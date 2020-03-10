@@ -25,14 +25,13 @@ $ make build
 ```bash
 $ make start
 ```
-
-6. To use another output format:
+By default flan creates Latex reports, to get other formats run:
 ```
 $ make html
 ```
 Additional supported formats are *md* (markdown), *html* and *json*.
 
-When the scan finishes you will find a Latex report of the summarizing the scan in `shared/reports`. You can also see the raw XML output from Nmap in `shared/xml_files`.
+When the scan finishes you will find the reports summarizing the scan in `shared/reports`. You can also see the raw XML output from Nmap in `shared/xml_files`.
 
 <div>
   <img style="display: inline-block" src="https://cfsecuritycdn.infosec.workers.dev/img/flan_scan_report1.png" width="49%"/>
@@ -85,6 +84,7 @@ $ docker run --name <container-name> \
              -e upload=gcp \
              -e bucket=<bucket-name> \
              -e GOOGLE_APPLICATION_CREDENTIALS=/shared/key.json
+             -e format=<optional, one of: md, html or json> \
              flan_scan
 ```
 
@@ -99,6 +99,7 @@ docker run --name <container-name> \
            -e bucket=<s3-bucket-name> \
            -e AWS_ACCESS_KEY_ID=<your-aws-access-key-id> \
            -e AWS_SECRET_ACCESS_KEY=<your-aws-secret-access-key> \
+           -e format=<optional, one of: md, html or json> \
            flan_scan
 
 
