@@ -13,3 +13,6 @@ html :
 
 json :
 	docker run --name $(container_name) -v "$(CURDIR)/shared:/shared:Z" -e format=json flan_scan
+
+csv :
+	docker run --name $(container_name) -v "$(CURDIR)/shared:/shared:Z" -e format=csv flan_scan

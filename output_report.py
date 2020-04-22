@@ -8,6 +8,7 @@ from contrib.descriptions import CveProjectProvider, VulnDescriptionProvider
 from contrib.parsers import FlanXmlParser
 from contrib.report_builders import ReportBuilder, LatexReportBuilder, MarkdownReportBuilder, JinjaHtmlReportBuilder, \
     JsonReportBuilder
+from contrib.report_builders.csv_report_builder import CSVReportBuilder
 
 
 def create_report(parser: FlanXmlParser, builder: ReportBuilder, nmap_command: str, start_date: str, output_writer: IO,
@@ -48,7 +49,8 @@ def create_report_builder(report_type: str) -> ReportBuilder:
         'tex': lambda p: LatexReportBuilder(p),
         'md': lambda p: MarkdownReportBuilder(p),
         'html': lambda p: JinjaHtmlReportBuilder(p),
-        'json': lambda p: JsonReportBuilder(p)
+        'json': lambda p: JsonReportBuilder(p),
+        'csv': lambda p: CSVReportBuilder(p)
     }
 
     if report_type not in builder_map:
