@@ -29,7 +29,7 @@ By default flan creates Latex reports, to get other formats run:
 ```
 $ make html
 ```
-Additional supported formats are *md* (markdown), *html* and *json*.
+Additional supported formats are *md* (markdown), *html*, *csv* and *json*.
 
 When the scan finishes you will find the reports summarizing the scan in `shared/reports`. You can also see the raw XML output from Nmap in `shared/xml_files`.
 
