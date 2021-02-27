@@ -1,5 +1,5 @@
 build :
-	docker build --no-cache -t flan_scan .
+	docker build --no-cache -t flan_scan -f Dockerfile .
 
 container_name = flan_$(shell date +'%s')
 start :
