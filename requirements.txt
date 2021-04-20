@@ -1,4 +1,4 @@
 xmltodict==0.12.0
 google-cloud-storage==1.23.0
 boto3==1.12.15
-Jinja2==2.10.3
+Jinja2==2.11.3
