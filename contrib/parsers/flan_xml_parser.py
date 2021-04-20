@@ -85,7 +85,10 @@ class FlanXmlParser:
         if port['state']['@state'] == 'closed':
             return
 
-        app_name = self.get_app_name(port['service'])
+        try:
+            app_name = self.get_app_name(port['service'])
+        except KeyError:
+            app_name = "unknown"
         port_num = port['@portid']
         new_app = app_name not in self.results
         self.results[app_name].locations[ip_addr].append(port_num)
