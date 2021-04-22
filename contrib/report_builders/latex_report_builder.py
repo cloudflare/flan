@@ -109,6 +109,8 @@ class LatexReportBuilder(ReportBuilder):
 \usepackage{hyperref}
 \usepackage{fontawesome}
 \usepackage{listings}
+\extrafloats{600}
+\maxdeadcycles 600
 \lstset{
 basicstyle=\small\ttfamily,
 columns=flexible,
