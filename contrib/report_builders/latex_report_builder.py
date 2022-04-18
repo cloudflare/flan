@@ -38,25 +38,27 @@ class LatexReportBuilder(ReportBuilder):
     def add_vulnerable_services(self, scan_results: Dict[str, ScanResult]):
         for s, report in scan_results.items():
             self._append('\\item \\textbf{\\large ' + s + ' \\large}')
-            vulns = report.vulns
+            vulns = report.vulns.items()
             locations = report.locations
-            num_vulns = len(vulns)
+            num_vulns = sum([len(report.vulns[v]) for v in report.vulns])
 
-            for v in vulns:
-                description = self.description_provider.get_description(v.name, v.vuln_type)
-                severity_name = v.severity_str
-                self._append('\\begin{figure}[h!]\n')
-                self._append('\\begin{tabular}{|p{16cm}|}\\rowcolor[HTML]{'
-                             + self.colors[severity_name]
-                             + '} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash} p{0.5cm}@{}}\\textbf{'
-                             + v.name + ' ' + severity_name + ' ('
-                             + str(v.severity)
-                             + ')} & \\href{' + description.url
-                             + '}{\\large \\faicon{link}}'
-                             + '\\end{tabular}\\\\\n Summary:'
-                             + description.text
-                             + '\\\\ \\hline \\end{tabular}  ')
-                self._append('\\end{figure}\n')
+            for cpe, vuln in vulns:
+                self._append('\\item \\textbf{\\large ' + cpe + ' \\large}')
+                for v in vuln:
+                    description = self.description_provider.get_description(v.name, v.vuln_type)
+                    severity_name = v.severity_str
+                    self._append('\\begin{figure}[h!]\n')
+                    self._append('\\begin{tabular}{|p{16cm}|}\\rowcolor[HTML]{'
+                                 + self.colors[severity_name]
+                                 + '} \\begin{tabular}{@{}p{15cm}>{\\raggedleft\\arraybackslash} p{0.5cm}@{}}\\textbf{'
+                                 + v.name + ' ' + severity_name + ' ('
+                                 + str(v.severity)
+                                 + ')} & \\href{' + description.url
+                                 + '}{\\large \\faicon{link}}'
+                                 + '\\end{tabular}\\\\\n Summary:'
+                                 + description.text
+                                 + '\\\\ \\hline \\end{tabular}  ')
+                    self._append('\\end{figure}\n')
 
             self._append('\\FloatBarrier\n\\textbf{The above '
                          + str(num_vulns)
