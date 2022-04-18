@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 from typing import Any, Dict, List
 
 from contrib.descriptions import VulnDescriptionProvider
@@ -21,15 +22,16 @@ class JsonReportBuilder(ReportBuilder):
     def add_vulnerable_services(self, scan_results: Dict[str, ScanResult]):
         for app_name, result in scan_results.items():
             self._buffer['vulnerable'][app_name] = {
-                'vulnerabilities': [],
+                'vulnerabilities': defaultdict(list),
                 'locations': self._serialize_locations(result.locations)
             }
 
-            for v in result.vulns:
-                data = v.to_dict()
-                description = self.description_provider.get_description(v.name, v.vuln_type)
-                data['description'], data['url'] = description.text, description.url
-                self._buffer['vulnerable'][app_name]['vulnerabilities'].append(data)
+            for vuln_cpe, vuln in result.vulns.items():
+                for v in vuln:
+                    data = v.to_dict()
+                    description = self.description_provider.get_description(v.name, v.vuln_type)
+                    data['description'], data['url'] = description.text, description.url
+                    self._buffer['vulnerable'][app_name]['vulnerabilities'][vuln_cpe].append(data)
 
     def add_non_vulnerable_services(self, scan_results: Dict[str, ScanResult]):
         for app_name, result in scan_results.items():

@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Dict, Any, List, Set
+from typing import Dict, OrderedDict, Any, List, Set
 
 import xmltodict
 
@@ -54,7 +54,7 @@ class FlanXmlParser:
         else:
             self.parse_host(hosts)
 
-    def parse_vuln(self, app_name: str, vuln: List[Dict[str, Any]]):
+    def parse_vuln(self, app_name: str, cpe: str, vuln: List[Dict[str, Any]]):
         vuln_name = ''
         severity = ''
         vuln_type = ''
@@ -66,7 +66,10 @@ class FlanXmlParser:
             elif field['@key'] == 'type':
                 vuln_type = field['#text']
 
-        self.results[app_name].vulns.append(Vuln(vuln_name, vuln_type, severity))
+        if cpe:
+            self.results[app_name].vulns[cpe].append(Vuln(vuln_name, vuln_type, severity))
+        else:
+            self.results[app_name].vulns[app_name].append(Vuln(vuln_name, vuln_type, severity))
 
     def parse_script(self, ip_addr: str, port: str, app_name: str, script: Dict[str, Any]):
         if 'table' not in script:
@@ -74,12 +77,21 @@ class FlanXmlParser:
                   app_name)
             return
         self.vulnerable_services.append(app_name)
-        script_table = script['table']['table']
+        script_table = script['table']
         if isinstance(script_table, list):
-            for vuln in script_table:
-                self.parse_vuln(app_name, vuln['elem'])
-        else:
-            self.parse_vuln(app_name, script_table['elem'])
+            for table in script_table:
+                cpe = table.get("@key")
+                for vuln in table['table']:
+                    self.parse_vuln(app_name, cpe, vuln['elem'])
+        elif (isinstance(script_table, OrderedDict) 
+              and isinstance(script_table['table'], list)):
+            cpe = script_table.get("@key")
+            for vuln in script_table['table']:
+                self.parse_vuln(app_name, cpe, vuln['elem'])
+        elif (isinstance(script_table, OrderedDict) 
+              and isinstance(script_table['table'], OrderedDict)):
+              cpe = script_table.get("@key")
+              self.parse_vuln(app_name, cpe, script_table['table']['elem'])
 
     def parse_port(self, ip_addr: str, port: Dict[str, Any]):
         if port['state']['@state'] == 'closed':
