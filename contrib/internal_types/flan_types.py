@@ -55,4 +55,4 @@ class ScanResult:
     """
     def __init__(self):
         self.locations = defaultdict(list)  # type: Dict[str, List[str]]
-        self.vulns = []  # type: List[Vuln]
+        self.vulns = defaultdict(list)  # type: Dict[str, List[Vuln]]
