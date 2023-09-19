@@ -116,6 +116,7 @@ docker run --name <container-name> \
            -e bucket=<storage-container-name> \
            -e AZURE_ACCOUNT_URL=<your-azure-storage-account-url> \
            -e AZURE_ACCOUNT_KEY=<your-azure-storage-secret-key-or-sas-string> \
+           -e format=<optional, one of: md, html or json> \
            flan_scan
 
 
