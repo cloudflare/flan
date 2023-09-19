@@ -25,8 +25,13 @@ $ make build
 ```bash
 $ make start
 ```
+By default flan creates Latex reports, to get other formats run:
+```
+$ make html
+```
+Additional supported formats are *md* (markdown), *html* and *json*.
 
-When the scan finishes you will find a Latex report of the summarizing the scan in `shared/reports`. You can also see the raw XML output from Nmap in `shared/xml_files`.
+When the scan finishes you will find the reports summarizing the scan in `shared/reports`. You can also see the raw XML output from Nmap in `shared/xml_files`.
 
 <div>
   <img style="display: inline-block" src="https://cfsecuritycdn.infosec.workers.dev/img/flan_scan_report1.png" width="49%"/>
@@ -42,10 +47,10 @@ $ nmap -sV -oX /shared/xml_files -oN - -v1 $@ --script=vulners/vulners.nse <ip-a
 ```
 The `-oX` flag adds an XML version of the scan results to the `/shared/xml_files` directory and the `-oN -` flag outputs "normal" Nmap results to the console. The `-v1` flag increases the verbosity to 1 and the `-sV` flag runs a service detection scan (aside from Nmap's default port and SYN scans). The `--script=vulners/vulners.nse` is the script that matches the services detected with relevant CVEs.
 
-Nmap also allows you to run UDP scans and to scan IPv6 addresses. To add these and other flags to Scan Flan's Nmap command after running `make build` run the container and pass in you Nmap flags like so:
+Nmap also allows you to run UDP scans and to scan IPv6 addresses. To add these and other flags to Flan Scan's Nmap command after running `make build` run the container and pass in your Nmap flags like so:
 
 ```bash
-$ docker run -v $(shell pwd)/shared:/shared flan_scan <Nmap-flags>
+$ docker run -v $(CURDIR)/shared:/shared flan_scan <Nmap-flags>
 ```
 
 Pushing Results to the Cloud
@@ -54,9 +59,10 @@ Pushing Results to the Cloud
 Flan Scan currently supports pushing Latex reports and raw XML Nmap output files to a GCS Bucket, AWS S3 Bucket, or an Azure Storage account. Flan Scan requires 2 environment variables to push results to the cloud. The first is `upload` which takes one of three values `gcp` or `aws` or `az`. The second is `bucket` and the value is the name of the S3 or GCS Bucket or Azure Container to upload the results to. To set the environment variables, after running `make build` run the container setting the environment variables like so:
 ```bash
 $ docker run --name <container-name> \
-             -v $(pwd)/shared:/shared \
+             -v $(CURDIR)/shared:/shared \
              -e upload=<gcp or aws or az> \
              -e bucket=<bucket-name> \
+             -e format=<optional, one of: md, html or json> \
              flan_scan
 ```
 
@@ -74,10 +80,11 @@ Run the container setting the `GOOGLE_APPLICATION_CREDENTIALS` environment varia
 
 ```bash
 $ docker run --name <container-name> \
-             -v $(pwd)/shared:/shared \
+             -v $(CURDIR)/shared:/shared \
              -e upload=gcp \
              -e bucket=<bucket-name> \
              -e GOOGLE_APPLICATION_CREDENTIALS=/shared/key.json
+             -e format=<optional, one of: md, html or json> \
              flan_scan
 ```
 
@@ -87,11 +94,12 @@ Set the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables to
 
 ```bash
 docker run --name <container-name> \
-           -v $(pwd)/shared:/shared \
+           -v $(CURDIR)/shared:/shared \
            -e upload=aws \
            -e bucket=<s3-bucket-name> \
            -e AWS_ACCESS_KEY_ID=<your-aws-access-key-id> \
            -e AWS_SECRET_ACCESS_KEY=<your-aws-secret-access-key> \
+           -e format=<optional, one of: md, html or json> \
            flan_scan
 
 
@@ -108,6 +116,7 @@ docker run --name <container-name> \
            -e bucket=<storage-container-name> \
            -e AZURE_ACCOUNT_URL=<your-azure-storage-account-url> \
            -e AZURE_ACCOUNT_KEY=<your-azure-storage-secret-key-or-sas-string> \
+           -e format=<optional, one of: md, html or json> \
            flan_scan
 
 

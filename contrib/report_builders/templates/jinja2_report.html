@@ -1,0 +1,194 @@
+<html lang="en">
+<head>
+  <title>Flan scan report</title>
+
+  <style type="text/css">
+    body {
+      margin: 22pt;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+    }
+
+    #summary_review, #command {
+      font-size: 18px;
+    }
+
+    #command code {
+      font-family: Monospaced, monospace;
+      font-weight: bolder;
+      color: darkslategray;
+    }
+
+    .section_head {
+      font-family: 'helvetica', san-serif, serif;
+      font-size: 20px;
+      font-weight: bolder;
+      font-stretch: expanded;
+    }
+
+    .services_list {
+      font-family: 'helvetica', serif;
+      padding-left: 20px;
+    }
+
+    .service_cpe {
+      font-size: 16px;
+      font-family: 'helvetica', serif;
+      font-weight: bold;
+    }
+
+    .vuln_short {
+      border: 1px solid #1d1d1d;
+      padding: 8px 0 7px 6px;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    .vuln_short a {
+      color: black;
+    }
+
+    .vuln_short.high {
+      background: #FD6865;
+    }
+
+    .vuln_short.medium {
+      background: #F8A101;
+    }
+
+    .vuln_short.low {
+      background: #33CDF9;
+    }
+
+    .vulns_list li {
+      display: inline-block;
+      padding: 10px;
+      vertical-align: top;
+      width: 100%;
+      margin: 10px 0 10px -60px;
+      border: 1px solid black;
+    }
+
+    .vuln_desc {
+      padding-top: 7px;
+    }
+
+    .locations_head {
+      font-size: 18px;
+      font-style: oblique;
+      font-weight: bold;
+      margin-left: -20px;
+      margin-bottom: 10px;
+    }
+
+    .locations_container {
+      margin-bottom: 20px;
+    }
+
+    .locations_list li {
+      margin-left: -70px;
+      list-style: none;
+      padding: 10px;
+    }
+
+    .ip_vulnerable {
+      font-size: 18px;
+      font-weight: bolder;
+      color: #9c0000;
+    }
+
+    .ip {
+      font-size: 18px;
+      color: #193232;
+    }
+
+    .non_vuln_service_list li {
+      margin-bottom: 10px;
+      margin-left: -40px;
+      list-style: none;
+    }
+
+    .service_name {
+      font-size: 16px;
+      font-family: helvetica, serif;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .ip_list li {
+      margin-left: -25px;
+    }
+  </style>
+</head>
+<body>
+<h1>Flan scan report</h1>
+<h2>{{ data.start_date }}</h2>
+<h2>Summary</h2>
+<div id="summary_review">
+    Flan Scan ran a network vulnerability scan with the following Nmap command on {{ data.start_date }}:
+    <div id="command">
+        <code>{{ data.nmap_command }}</code>
+    </div>
+</div>
+<div id="vulnerable_services">
+    <h4 class="section_head">Services with vulnerabilities:</h4>
+    <ol class="services_list">
+        {% for service, report in data.vulnerable.items() %}
+            <li>
+                <div class="service_cpe">{{ service }}</div>
+                <div class="service_vulns">
+                    <ul class="vulns_list">
+                        {% for vuln in report.vulnerabilities %}
+                            <li>
+                                <div class="vuln_short {{ vuln.severity_str.lower() }}">
+                                    <a class="vuln_link"
+                                       href="{{ vuln.url }}">{{ vuln.name }}</a> {{ vuln.severity_str }}
+                                    ({{ vuln.severity }})
+                                </div>
+                                <div class="vuln_desc">{{ vuln.description }}</div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="locations_container">
+                        <div class="locations_head">The above {{ report.vulnerabilities|length }} vulnerabilities apply
+                            to these network locations:
+                        </div>
+                        <ul class="locations_list">
+                            {% for loc, ports in report.locations.items() %}
+                                <li> <span class="ip_vulnerable"> {{ loc }} </span> Ports: <span class="ports"> {{ ports }} </span></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ol>
+
+</div>
+<div id="non_vuln">
+    <h4 class="section_head">Services with no known vulnerabilities:</h4>
+    <ul class="non_vuln_service_list">
+        {% for service, report in data.not_vulnerable.items() %}
+            <li>
+                <div class="service_name">{{ service }}</div>
+                <ul class="locations_list">
+                    {% for loc, ports in report.locations.items() %}
+                      <li><span class="ip">{{ loc }}</span> Ports: <span class="ports">{{ ports }}</span></li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<div id="ips">
+    <div class="section_head">List of addresses scanned:</div>
+    <ol class="ip_list">
+        {% for ip in data.ips %}
+            <li>{{ ip }}</li>
+        {% endfor %}
+    </ol>
+</div>
+</body>
+</html>

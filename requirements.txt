@@ -1,0 +1,6 @@
+xmltodict==0.12.0
+google-cloud-storage==1.23.0
+azure-storage-blob==12.18.1
+boto3==1.12.15
+Jinja2==2.11.3
+markupsafe==2.0.1
