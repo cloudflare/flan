@@ -35,3 +35,5 @@ spec:
                value: <GCP_OR_AWS_OR_AZ>
              - name: bucket
                value: <BUCKET_NAME>
+             - name: format
+               value: <REPORT_FORMAT>
