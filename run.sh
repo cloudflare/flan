@@ -34,7 +34,7 @@ function upload {
 }
 
 function get_filename(){
-    echo $1 | tr / -
+    echo "$1" | tr -d '"' | tr ' /' '_-'
 }
 
 mkdir $root_dir$xml_dir
