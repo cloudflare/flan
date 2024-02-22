@@ -34,14 +34,16 @@ function upload {
 }
 
 function get_filename(){
-    echo "$1" | tr -d '"' | tr ' /' '_-'
+    echo "$1" | tr -d '"' | tr ' ' '_' | tr '/' '-'
 }
 
 mkdir $root_dir$xml_dir
 while IFS= read -r line
 do
+  echo "Scanning IP: $line"
   current_time=$(date "+%Y.%m.%d-%H.%M.%S")
   filename=$(get_filename $line)".xml"
+  echo "Filename: $filename"
   nmap -sV -oX $root_dir$xml_dir/$filename -oN - -v1 $@ --script=vulners/vulners.nse $line
   upload $xml_dir/$filename
 done < /shared/ips.txt
