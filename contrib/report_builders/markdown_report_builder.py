@@ -34,16 +34,18 @@ class MarkdownReportBuilder(ReportBuilder):
         for i, pair in enumerate(scan_results.items(), start=1):
             app_name, report = pair  # type: str, ScanResult
             self._append_service(i, app_name)
-            num_vulns = len(report.vulns)
+            num_vulns = sum([len(report.vulns[v]) for v in report.vulns])
 
-            for v in report.vulns:
-                description = self.description_provider.get_description(v.name, v.vuln_type)
-                self._append_line('- [**{name}** {severity} ({severity_num})]({link} "{title}")'
-                                  .format(name=v.name, severity=v.severity_str, severity_num=v.severity,
-                                          link=description.url, title=v.name), spaces=4)
-                self._append_line('```text', separators=1, spaces=6)
-                self._append_line(description.text, separators=1, spaces=6)
-                self._append_line('```', spaces=6)
+            for cpe, vuln in report.vulns.items():
+                self._append_line('- **{0}**'.format(cpe))
+                for v in vuln:
+                    description = self.description_provider.get_description(v.name, v.vuln_type)
+                    self._append_line('- [**{name}** {severity} ({severity_num})]({link} "{title}")'
+                                      .format(name=v.name, severity=v.severity_str, severity_num=v.severity,
+                                              link=description.url, title=v.name), spaces=4)
+                    self._append_line('```text', separators=1, spaces=6)
+                    self._append_line(description.text, separators=1, spaces=6)
+                    self._append_line('```', spaces=6)
 
             self._append_line('The above {num} vulnerabilities apply to these network locations'.format(num=num_vulns),
                               spaces=4)

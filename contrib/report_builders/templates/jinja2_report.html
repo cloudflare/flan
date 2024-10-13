@@ -71,6 +71,19 @@
       border: 1px solid black;
     }
 
+    .sub_vuln {
+        font-size: 20px;
+        padding: 20px 0 15px 0;
+        font-family: 'helvetica', serif;
+        font-weight: bold;
+        position: relative;
+        left: -100px;
+    }
+
+    .sub_vuln:before {
+        content: "\2014 ";
+    }
+
     .vuln_desc {
       padding-top: 7px;
     }
@@ -135,24 +148,32 @@
 <div id="vulnerable_services">
     <h4 class="section_head">Services with vulnerabilities:</h4>
     <ol class="services_list">
+        {% set ns = namespace(vulns_count=0) %}
         {% for service, report in data.vulnerable.items() %}
+        {% set ns.vulns_count = 0 %}
             <li>
                 <div class="service_cpe">{{ service }}</div>
                 <div class="service_vulns">
                     <ul class="vulns_list">
-                        {% for vuln in report.vulnerabilities %}
-                            <li>
-                                <div class="vuln_short {{ vuln.severity_str.lower() }}">
-                                    <a class="vuln_link"
-                                       href="{{ vuln.url }}">{{ vuln.name }}</a> {{ vuln.severity_str }}
-                                    ({{ vuln.severity }})
-                                </div>
-                                <div class="vuln_desc">{{ vuln.description }}</div>
-                            </li>
+                        {% for vuln_cpe, vuln in report.vulnerabilities.items() %}
+                        {% set ns.vulns_count = ns.vulns_count + vuln|length %}
+                            <ul class="vulns_list"> 
+                                <div class="sub_vuln">{{vuln_cpe}}</div>
+                                {% for v in vuln %}
+                                    <li>
+                                        <div class="vuln_short {{ v.severity_str.lower() }}">
+                                            <a class="vuln_link"
+                                              href="{{ v.url }}">{{ v.name }}</a> {{ v.severity_str }}
+                                            ({{ v.severity }})
+                                        </div>
+                                        <div class="vuln_desc">{{ v.description }}</div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
                         {% endfor %}
                     </ul>
                     <div class="locations_container">
-                        <div class="locations_head">The above {{ report.vulnerabilities|length }} vulnerabilities apply
+                        <div class="locations_head">The above {{ ns.vulns_count }} vulnerabilities apply
                             to these network locations:
                         </div>
                         <ul class="locations_list">
