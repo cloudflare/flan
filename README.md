@@ -56,17 +56,17 @@ $ docker run -v $(CURDIR)/shared:/shared flan_scan <Nmap-flags>
 Pushing Results to the Cloud
 ----------------------------
 
-Flan Scan currently supports pushing Latex reports and raw XML Nmap output files to a GCS Bucket or to an AWS S3 Bucket. Flan Scan requires 2 environment variables to push results to the cloud. The first is `upload` which takes one of two values `gcp` or `aws`. The second is `bucket` and the value is the name of the S3 or GCS Bucket to upload the results to. To set the environment variables, after running `make build` run the container setting the environment variables like so:
+Flan Scan currently supports pushing Latex reports and raw XML Nmap output files to a GCS Bucket, AWS S3 Bucket, or an Azure Storage account. Flan Scan requires 2 environment variables to push results to the cloud. The first is `upload` which takes one of three values `gcp` or `aws` or `az`. The second is `bucket` and the value is the name of the S3 or GCS Bucket or Azure Container to upload the results to. To set the environment variables, after running `make build` run the container setting the environment variables like so:
 ```bash
 $ docker run --name <container-name> \
              -v $(CURDIR)/shared:/shared \
-             -e upload=<gcp or aws> \
+             -e upload=<gcp or aws or az> \
              -e bucket=<bucket-name> \
              -e format=<optional, one of: md, html or json> \
              flan_scan
 ```
 
-Below are some examples for adding the necessary AWS or GCP authentication keys as environment variables in container. However, this can also be accomplished with a secret in Kubernetes that exposes the necessary environment variables or with other secrets management tools.
+Below are some examples for adding the necessary AWS, GCP, or Azure authentication keys as environment variables in container. However, this can also be accomplished with a secret in Kubernetes that exposes the necessary environment variables or with other secrets management tools.
 
 
 ### Example GCS Bucket Configuration
@@ -99,6 +99,23 @@ docker run --name <container-name> \
            -e bucket=<s3-bucket-name> \
            -e AWS_ACCESS_KEY_ID=<your-aws-access-key-id> \
            -e AWS_SECRET_ACCESS_KEY=<your-aws-secret-access-key> \
+           -e format=<optional, one of: md, html or json> \
+           flan_scan
+
+
+```
+
+### Example Azure Storage Configuration
+
+Set the `AZURE_ACCOUNT_NAME` and `AZURE_ACCOUNT_KEY` environment variables to the corresponding variables for your Azure storage account.
+
+```bash
+docker run --name <container-name> \
+           -v $(pwd)/shared:/shared \
+           -e upload=az \
+           -e bucket=<storage-container-name> \
+           -e AZURE_ACCOUNT_URL=<your-azure-storage-account-url> \
+           -e AZURE_ACCOUNT_KEY=<your-azure-storage-secret-key-or-sas-string> \
            -e format=<optional, one of: md, html or json> \
            flan_scan
 
